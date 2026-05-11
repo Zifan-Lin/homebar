@@ -34,6 +34,12 @@ Each page has its **own distinct aesthetic** matching its content. Do not force 
 - **CTA buttons**: all use class `card-cta` (Courier Prime, 11px, 3px letter-spacing, uppercase, `→` arrow on hover).
 - **Drinks organized by**: guest-facing categories — *Strong & Short*, *Bright & Balanced*, *Long & Easy* — not by cocktail method.
 
+## Recipe units
+
+- **1 liquid oz ≈ 30 ml.** Convert to oz when the ml amount is a clean multiple (15, 22.5, 30, 45, 60 ml → ½, ¾, 1, 1½, 2 oz).
+- **Stick with ml** when any ingredient uses an odd amount (e.g., 3 ml, 5 ml, 10 ml) — odd amounts mean the whole recipe is easier to read in ml.
+- It is fine to have oz in one drink and ml in another on the same menu. The owner is the one making the drinks and cares about precision; guests don't.
+
 ## Adding a new event menu
 
 1. Create `your-theme-bar-menu.html` with a self-contained aesthetic appropriate to the theme.
