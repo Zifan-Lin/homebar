@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Horizon — Cocktail Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void:       #04050E;
+    --card-bg:    rgba(255,255,255,0.028);
+    --card-hover: rgba(255,255,255,0.048);
+    --border:     rgba(196,150,58,0.18);
+    --border-hl:  rgba(196,150,58,0.55);
+    --gold:       #C4963A;
+    --gold-bright:#F0C060;
+    --gold-dim:   #7A5C1E;
+    --text:       #D0CBB8;
+    --text-dim:   #5E6878;
+    --text-mid:   #8A95A0;
+    --teal:       #4A8A9E;
+    --rule:       rgba(196,150,58,0.15);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--void);
+    color: var(--text);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  #canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.7;
+  }
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(90px);
+  }
+  .orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(10,20,70,0.6) 0%, transparent 70%);
+    top: -150px; right: -150px;
+  }
+  .orb-2 {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(100,40,10,0.2) 0%, transparent 70%);
+    bottom: 100px; left: -100px;
+  }
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 72px 40px 96px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 72px;
+    animation: fadeDown 1.2s cubic-bezier(.16,1,.3,1) both;
+  }
+  .header-eyebrow {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 7px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(42px, 9vw, 86px);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 0.95;
+    color: var(--text);
+  }
+  .header h1 .accent { color: var(--gold); }
+  .header-rule {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 28px auto 20px;
+    max-width: 400px;
+  }
+  .header-rule::before, .header-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold-dim), transparent);
+  }
+  .diamond {
+    width: 5px; height: 5px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+  .header-sub {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+  }
+  .intro {
+    text-align: center;
+    max-width: 520px;
+    margin: 0 auto 72px;
+    font-size: 15px;
+    font-style: italic;
+    color: var(--text-mid);
+    line-height: 1.85;
+    animation: fadeUp 1.2s 0.3s cubic-bezier(.16,1,.3,1) both;
+  }
+  .section-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.5;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    margin-top: 52px;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+  .card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold-dim);
+    padding: 30px 34px;
+    margin-bottom: 14px;
+    transition: background 0.4s ease, border-color 0.4s ease;
+    animation: fadeUp 0.8s cubic-bezier(.16,1,.3,1) both;
+  }
+  .card:hover {
+    background: var(--card-hover);
+    border-left-color: var(--gold);
+    border-color: var(--border-hl);
+  }
+  .card:nth-child(1)  { animation-delay: 0.10s; }
+  .card:nth-child(2)  { animation-delay: 0.18s; }
+  .card:nth-child(3)  { animation-delay: 0.26s; }
+  .card:nth-child(4)  { animation-delay: 0.34s; }
+  .card:nth-child(5)  { animation-delay: 0.42s; }
+  .card:nth-child(6)  { animation-delay: 0.50s; }
+  .card:nth-child(7)  { animation-delay: 0.58s; }
+  .card:nth-child(8)  { animation-delay: 0.66s; }
+  .card:nth-child(9)  { animation-delay: 0.74s; }
+  .card:nth-child(10) { animation-delay: 0.82s; }
+  .card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+  .card-name {
+    font-family: 'Cinzel', serif;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    line-height: 1;
+  }
+  .card-type {
+    font-family: 'Courier Prime', monospace;
+    font-size: 8px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .type-acronym  { color: var(--gold);  background: rgba(196,150,58,0.08);  border: 1px solid var(--gold-dim); }
+  .type-abstract { color: var(--teal);  background: rgba(74,138,158,0.08);  border: 1px solid rgba(74,138,158,0.3); }
+  .type-notation { color: #8A7ACE;      background: rgba(138,122,206,0.08); border: 1px solid rgba(138,122,206,0.3); }
+  .card-expansion {
+    font-family: 'Courier Prime', monospace;
+    font-size: 10px;
+    letter-spacing: 0.4px;
+    color: var(--text-dim);
+    margin-bottom: 9px;
+    line-height: 1.7;
+  }
+  .hl {
+    color: var(--gold-bright);
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .real-exp {
+    font-size: 9px;
+    color: var(--text-dim);
+    opacity: 0.6;
+    margin-left: 8px;
+  }
+  .card-classic {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--teal);
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    opacity: 0.85;
+  }
+  .card-desc {
+    font-size: 15px;
+    color: var(--text-mid);
+    line-height: 1.75;
+    margin-bottom: 16px;
+  }
+  .card-desc em {
+    color: var(--text);
+    font-style: normal;
+    font-weight: 500;
+  }
+  .ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .ingredient {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 0.8px;
+    color: #4E5A66;
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.055);
+    padding: 4px 9px;
+    border-radius: 2px;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .card:hover .ingredient {
+    color: #7A8A98;
+    border-color: rgba(255,255,255,0.1);
+  }
+  .card-note {
+    margin-top: 12px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    opacity: 0.5;
+    letter-spacing: 0.3px;
+    font-style: italic;
+  }
+  .footer {
+    margin-top: 72px;
+    padding-top: 40px;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+    animation: fadeUp 1s 1s cubic-bezier(.16,1,.3,1) both;
+  }
+  .footer p {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    opacity: 0.4;
+    line-height: 2.4;
+  }
+  .footer-deco {
+    font-size: 18px;
+    letter-spacing: 16px;
+    opacity: 0.1;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.5;
+    text-decoration: none;
+    margin-bottom: 56px;
+    transition: opacity 0.3s;
+  }
+  .back-link:hover { opacity: 1; }
+  .back-link::before { content: '←'; font-size: 11px; letter-spacing: 0; }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (max-width: 600px) {
+    .page { padding: 48px 20px 72px; }
+    .card { padding: 22px 20px; }
+    .card-name { font-size: 20px; }
+    .card-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="page">
+
+  <a href="index.html" class="back-link">Home Bar</a>
+
+  <header class="header">
+    <div class="header-eyebrow">Home Bar &nbsp;·&nbsp; Spectral Type G2V</div>
+    <h1>Event<br><span class="accent">Horizon</span></h1>
+    <div class="header-rule"><div class="diamond"></div></div>
+    <div class="header-sub">A cocktail menu for those who look up</div>
+  </header>
+
+  <p class="intro">
+    Every drink is named for a mission, instrument, or phenomenon from the astronomical literature.
+    The acronyms are real. The expansions are&nbsp;&hellip;&nbsp;negotiable.
+  </p>
+
+  <!-- ── MISSIONS & SURVEYS ── -->
+  <div class="section-label">Missions &amp; Surveys</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">TESS</div>
+      <span class="card-type type-acronym">Acronym</span>
+    </div>
+    <div class="card-expansion">
+      <span class="hl">T</span><span class="hl">E</span>quila,&nbsp;<span class="hl">S</span>weet &amp;&nbsp;<span class="hl">S</span>our
+      <span class="real-exp">// Transiting Exoplanet Survey Satellite</span>
+    </div>
+    <div class="card-classic">née Margarita</div>
+    <div class="card-desc">
+      TESS hunts exoplanets by monitoring stellar brightness for the faint <em>dimming</em> of a transit.
+      This drink operates on an identical principle — it dims the observer, gradually and reproducibly,
+      on a well-characterised timescale. The acronym reverse-engineers itself with embarrassing elegance:
+      tequila contributes both the T and the E; lime does the rest. Salt rim mandatory.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">2 oz blanco tequila</span>
+      <span class="ingredient">¾ oz triple sec</span>
+      <span class="ingredient">¾ oz fresh lime</span>
+      <span class="ingredient">salted rim</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">GMT</div>
+      <span class="card-type type-acronym">Acronym</span>
+    </div>
+    <div class="card-expansion">
+      <span class="hl">G</span>in,&nbsp;<span class="hl">M</span>ixer (tonic),&nbsp;<span class="hl">T</span>wist of lime
+      <span class="real-exp">// Giant Magellan Telescope</span>
+    </div>
+    <div class="card-classic">née Gin &amp; Tonic</div>
+    <div class="card-desc">
+      The <em>Giant Magellan Telescope</em> will be the largest optical telescope on Earth when completed
+      at Las Campanas Observatory, Chile — seven 8.4-metre mirrors resolving angular detail
+      ten times finer than Hubble. This drink resolves nothing. It requires almost no assembly
+      and tastes exceptional. A monument to elegant minimalism.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">2 oz London dry gin</span>
+      <span class="ingredient">4 oz tonic water</span>
+      <span class="ingredient">lime wedge</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">ELT</div>
+      <span class="card-type type-acronym">Acronym</span>
+    </div>
+    <div class="card-expansion">
+      <span class="hl">E</span>au-de-vie,&nbsp;<span class="hl">L</span>emon,&nbsp;<span class="hl">T</span>riple sec (Cointreau)
+      <span class="real-exp">// Extremely Large Telescope, ESO</span>
+    </div>
+    <div class="card-classic">née Sidecar</div>
+    <div class="card-desc">
+      ESO's <em>Extremely Large Telescope</em> — a 39-metre primary on Cerro Armazones, Chile —
+      will be, by some margin, the largest optical/near-IR telescope ever constructed.
+      Three ingredients, precise ratio, served in a sugar-rimmed coupe.
+      Not the tallest drink at the bar. Extremely the best drink at the bar.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">1½ oz cognac</span>
+      <span class="ingredient">¾ oz Cointreau</span>
+      <span class="ingredient">¾ oz lemon juice</span>
+      <span class="ingredient">sugar rim</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">WISE</div>
+      <span class="card-type type-acronym">Acronym</span>
+    </div>
+    <div class="card-expansion">
+      <span class="hl">W</span>hiskey,&nbsp;lemon&nbsp;ju<span class="hl">I</span>ce,&nbsp;<span class="hl">S</span>imple&nbsp;syrup,&nbsp;l<span class="hl">E</span>mon
+      <span class="real-exp">// Wide-field Infrared Survey Explorer, NASA</span>
+    </div>
+    <div class="card-classic">née Whiskey Sour</div>
+    <div class="card-desc">
+      NASA's <em>Wide-field Infrared Survey Explorer</em> mapped the entire sky in mid-infrared,
+      cataloguing hundreds of millions of stars, brown dwarfs, and galaxies.
+      Note: the I and E are borrowed from <em>within</em> "lemon juice" —
+      a flagrant violation of standard acronym convention,
+      and therefore entirely consistent with astronomical tradition.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">2 oz bourbon</span>
+      <span class="ingredient">¾ oz lemon juice</span>
+      <span class="ingredient">½ oz simple syrup</span>
+      <span class="ingredient">no egg white</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">JUICE</div>
+      <span class="card-type type-acronym">Acronym</span>
+    </div>
+    <div class="card-expansion">
+      <span class="hl">J</span>uniper&nbsp;gin,&nbsp;lim<span class="hl">e</span>&nbsp;j<span class="hl">UI</span>ce,&nbsp;<span class="hl">C</span>hilled,&nbsp;serv<span class="hl">E</span>d&nbsp;up
+      <span class="real-exp">// JUpiter ICy moons Explorer, ESA</span>
+    </div>
+    <div class="card-classic">née Gimlet</div>
+    <div class="card-desc">
+      ESA's <em>JUICE</em> is currently en route to the Jovian system, targeting Ganymede, Callisto, and Europa —
+      moons believed to harbour vast subsurface liquid water oceans.
+      The Gimlet is gin plus lime juice. The drink is, literally, juice.
+      The astronomers who named this mission knew exactly what they were doing.
+      The recursion is not accidental. It is the entire point.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">2 oz gin</span>
+      <span class="ingredient">¾ oz fresh lime juice</span>
+      <span class="ingredient">¾ oz simple syrup</span>
+      <span class="ingredient">served up</span>
+    </div>
+  </div>
+
+  <!-- ── INSTRUMENTS ── -->
+  <div class="section-label">Instruments &amp; Spectrographs</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">WINERED</div>
+      <span class="card-type type-acronym">Acronym</span>
+    </div>
+    <div class="card-expansion">
+      <span class="hl">W</span>arm&nbsp;<span class="hl">IN</span>frared&nbsp;<span class="hl">E</span>chelle&nbsp;spectrograph&nbsp;to&nbsp;<span class="hl">R</span>ealiz<span class="hl">e</span>&nbsp;<span class="hl">D</span>ispersion
+      <span class="real-exp">// Magellan/Clay Telescope, Las Campanas</span>
+    </div>
+    <div class="card-classic">née New York Sour</div>
+    <div class="card-desc">
+      <em>WINERED</em> is a high-resolution near-infrared spectrograph on the 6.5-metre Magellan Clay telescope.
+      Its name contains the letters W-I-N-E-R-E-D, in that order.
+      A New York Sour is a whiskey sour finished with a <em>red wine float</em>.
+      The drink is wine, plus red. The name is WINERED.
+      No further justification is required, available, or possible.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">2 oz bourbon</span>
+      <span class="ingredient">¾ oz lemon juice</span>
+      <span class="ingredient">½ oz simple syrup</span>
+      <span class="ingredient">red wine float</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">V&#8209;band</div>
+      <span class="card-type type-notation">Notation</span>
+    </div>
+    <div class="card-expansion">
+      Johnson–Cousins V filter &nbsp;·&nbsp; &lambda;<sub>eff</sub> = 551 nm &nbsp;·&nbsp; <span style="color:var(--gold-bright)">green</span>
+      <span class="real-exp">// standard visual photometric passband</span>
+    </div>
+    <div class="card-classic">née Midori Southside</div>
+    <div class="card-desc">
+      The <em>V-band</em> is the green channel of the canonical UBVRI photometric system,
+      centred at 551 nm and designed to approximate the peak sensitivity of the dark-adapted human eye.
+      Midori is Japanese for <em>green</em>. Emission nebulae almost never look green —
+      they skip straight from blue to red. This drink is aggressively, defiantly green.
+      A photometric anomaly. Order it anyway.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">1½ oz gin</span>
+      <span class="ingredient">1 oz Midori</span>
+      <span class="ingredient">¾ oz lime juice</span>
+      <span class="ingredient">½ oz simple syrup</span>
+      <span class="ingredient">8 mint leaves</span>
+    </div>
+  </div>
+
+  <!-- ── STELLAR PHYSICS ── -->
+  <div class="section-label">Stellar Physics</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">OBAFGKM</div>
+      <span class="card-type type-acronym">Acronym</span>
+    </div>
+    <div class="card-expansion">
+      <span class="hl">O</span>ld&nbsp;fashioned,&nbsp;<span class="hl">B</span>ourbon,&nbsp;<span class="hl">A</span>ngostura&nbsp;bitters,&nbsp;old&nbsp;<span class="hl">F</span>ashioned,&nbsp;oran<span class="hl">G</span>e&nbsp;peel,&nbsp;whis<span class="hl">K</span>ey,&nbsp;si<span class="hl">M</span>ple&nbsp;syrup
+      <span class="real-exp">// Harvard stellar spectral classification sequence</span>
+    </div>
+    <div class="card-classic">née Old Fashioned</div>
+    <div class="card-desc">
+      <em>O B A F G K M</em> — the Harvard spectral sequence, from O-type blue supergiants
+      at ~50,000 K down to M-type red dwarfs at ~3,000 K, traditionally memorised as
+      <em>"Oh Be A Fine Girl, Kiss Me."</em>
+      "Old Fashioned" appears twice — once for O, once for F —
+      a recursive self-reference that is either a logical flaw or a deliberate artistic choice.
+      Astronomers will know which.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">2 oz bourbon</span>
+      <span class="ingredient">2 dashes Angostura</span>
+      <span class="ingredient">1 tsp simple syrup</span>
+      <span class="ingredient">orange peel</span>
+      <span class="ingredient">large ice cube</span>
+    </div>
+    <div class="card-note">Served neat = O-type (50,000 K). &nbsp;&nbsp; On the rocks = M-type (3,000 K). &nbsp;&nbsp; Choose your temperature.</div>
+  </div>
+
+  <!-- ── PHENOMENA ── -->
+  <div class="section-label">Phenomena</div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">Vertical Transport</div>
+      <span class="card-type type-abstract">Abstract</span>
+    </div>
+    <div class="card-expansion">
+      Convective energy transport in stellar interiors
+      <span class="real-exp">// buoyancy-driven upward motion of hot plasma</span>
+    </div>
+    <div class="card-classic">née French 75</div>
+    <div class="card-desc">
+      In the convective zones of solar-type stars, columns of hot plasma rise buoyantly,
+      deposit their energy at the surface, cool, and descend — a continuous cycle of
+      <em>vertical transport</em> that carries fusion energy outward over thousands of years.
+      The bubbles in this glass do the same thing, on a somewhat compressed timescale.
+      The gin is the energy source. The sparkling wine is the convective envelope.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">1 oz gin</span>
+      <span class="ingredient">½ oz lemon juice</span>
+      <span class="ingredient">½ oz simple syrup</span>
+      <span class="ingredient">sparkling wine to top</span>
+      <span class="ingredient">lemon twist</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-name">CME</div>
+      <span class="card-type type-acronym">Acronym</span>
+    </div>
+    <div class="card-expansion">
+      <span class="hl">C</span>orona,&nbsp;<span class="hl">M</span>ainly&nbsp;<span class="hl">E</span>njoyed
+      <span class="real-exp">// Coronal Mass Ejection</span>
+    </div>
+    <div class="card-classic">née Corona (beer)</div>
+    <div class="card-desc">
+      A <em>Coronal Mass Ejection</em> is a sudden eruption of magnetised plasma from the Sun's outer atmosphere,
+      capable of disrupting satellites and power grids across the planet.
+      This is a Corona with a lime wedge.
+      The solar corona is also ~200× hotter than the photosphere beneath it —
+      the <em>Coronal Heating Problem</em>, unsolved since 1939.
+      This drink will not help solve it. Order it anyway.
+    </div>
+    <div class="ingredients">
+      <span class="ingredient">1× Corona Extra</span>
+      <span class="ingredient">lime wedge, squeezed in</span>
+    </div>
+    <div class="card-note">T<sub>corona</sub> ~ 1–3 MK &nbsp;·&nbsp; T<sub>surface</sub> ~ 5,778 K &nbsp;·&nbsp; heating mechanism: unknown &nbsp;·&nbsp; drink: refreshing</div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-deco">&#9733; &#10022; &#9733; &#10022; &#9733;</div>
+    <p>All acronyms are real astronomical missions, instruments, or concepts.</p>
+    <p>Expansions are presented in the finest tradition of reverse-engineered nomenclature.</p>
+    <p>Please drink responsibly &nbsp;·&nbsp; The universe is 13.8 Gyr old and you have time</p>
+  </footer>
+
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let stars = [], W, H;
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+
+function initStars(n) {
+  stars = [];
+  for (let i = 0; i < n; i++) {
+    stars.push({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.1 + 0.2,
+      a: Math.random(),
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.0004 + Math.random() * 0.0008
+    });
+  }
+}
+
+function draw(t) {
+  ctx.clearRect(0, 0, W, H);
+  for (const s of stars) {
+    const a = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(218,210,195,${a * 0.9})`;
+    ctx.fill();
+  }
+  requestAnimationFrame(draw);
+}
+
+resize();
+initStars(300);
+requestAnimationFrame(draw);
+window.addEventListener('resize', () => { resize(); initStars(300); });
+</script>
+</body>
+</html>

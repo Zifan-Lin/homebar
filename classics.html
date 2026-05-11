@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House Classics — Home Bar</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wood-base:  #6B3F1E;
+    --parchment:  #F4E8CE;
+    --parchment-dark: #E8D5AE;
+    --ink:        #2A1608;
+    --ink-mid:    #6B4E35;
+    --ink-dim:    #9A7E65;
+    --red:        #8B2010;
+    --red-dim:    rgba(139,32,16,0.15);
+    --rule:       rgba(42,22,8,0.12);
+    --shadow:     rgba(30,15,5,0.22);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── Wood grain background ── */
+  body {
+    min-height: 100vh;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.7;
+
+    background-color: var(--wood-base);
+    background-image:
+      /* Fine horizontal grain lines */
+      repeating-linear-gradient(
+        180deg,
+        transparent 0px,
+        transparent 3px,
+        rgba(255,210,140,0.025) 3px,
+        rgba(255,210,140,0.025) 4px,
+        transparent 4px,
+        transparent 10px,
+        rgba(20,8,2,0.04) 10px,
+        rgba(20,8,2,0.04) 11px,
+        transparent 11px,
+        transparent 22px,
+        rgba(255,200,120,0.02) 22px,
+        rgba(255,200,120,0.02) 24px
+      ),
+      /* Slow undulating grain variation */
+      repeating-linear-gradient(
+        178deg,
+        rgba(255,180,80,0.03) 0px,
+        rgba(80,35,10,0.06)  60px,
+        rgba(255,190,100,0.03) 120px,
+        rgba(60,25,5,0.05)  200px,
+        rgba(255,180,80,0.03) 260px
+      ),
+      /* Knot-like radial warmth */
+      radial-gradient(ellipse 70% 30% at 30% 55%, rgba(120,60,15,0.25) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 25% at 75% 25%, rgba(100,45,10,0.18) 0%, transparent 65%),
+      /* Colour depth gradient */
+      linear-gradient(
+        175deg,
+        #7A4820 0%,
+        #5C3010 30%,
+        #7B4520 55%,
+        #4E2808 80%,
+        #6A3C18 100%
+      );
+  }
+
+  /* ── Page parchment panel ── */
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 40px 80px;
+  }
+
+  /* ── Back link ── */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--parchment);
+    opacity: 0.45;
+    text-decoration: none;
+    margin-bottom: 40px;
+    transition: opacity 0.3s;
+  }
+  .back-link:hover { opacity: 0.85; }
+  .back-link::before { content: '←'; font-size: 11px; letter-spacing: 0; }
+
+  /* ── Header — on parchment ── */
+  .header {
+    background: var(--parchment);
+    padding: 44px 48px 40px;
+    text-align: center;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 24px var(--shadow), 0 1px 0 rgba(255,255,255,0.4) inset;
+    animation: dropIn 0.9s cubic-bezier(.16,1,.3,1) both;
+    position: relative;
+  }
+
+  /* Parchment edge texture */
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 60px,
+      rgba(42,22,8,0.015) 60px,
+      rgba(42,22,8,0.015) 61px
+    );
+    pointer-events: none;
+  }
+
+  .header-eyebrow {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--red);
+    opacity: 0.6;
+    margin-bottom: 18px;
+  }
+
+  .header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(40px, 8vw, 74px);
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    line-height: 0.95;
+    color: var(--ink);
+  }
+
+  .header h1 .accent { color: var(--red); }
+
+  .header-rule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px auto 18px;
+    max-width: 320px;
+  }
+  .header-rule::before, .header-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(42,22,8,0.25), transparent);
+  }
+  .diamond {
+    width: 5px; height: 5px;
+    background: var(--red);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .header-sub {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-mid);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Parchment card (shared by sections) ── */
+  .menu-panel {
+    background: var(--parchment);
+    box-shadow: 0 4px 24px var(--shadow), 0 1px 0 rgba(255,255,255,0.35) inset;
+    margin-bottom: 20px;
+    padding: 36px 40px;
+    animation: dropIn 0.7s cubic-bezier(.16,1,.3,1) both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Subtle parchment grain */
+  .menu-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      92deg,
+      transparent 0px,
+      transparent 80px,
+      rgba(42,22,8,0.012) 80px,
+      rgba(42,22,8,0.012) 81px
+    );
+    pointer-events: none;
+  }
+
+  .menu-panel:nth-child(2) { animation-delay: 0.08s; }
+  .menu-panel:nth-child(3) { animation-delay: 0.16s; }
+  .menu-panel:nth-child(4) { animation-delay: 0.24s; }
+
+  /* ── Section label inside panel ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 6px;
+  }
+
+  .section-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--red);
+    white-space: nowrap;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(42,22,8,0.15);
+  }
+
+  .section-hint {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--ink-dim);
+    white-space: nowrap;
+  }
+
+  .section-desc {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ink-dim);
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── Drink entry ── */
+  .drink {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 20px;
+    align-items: start;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .drink:last-child { border-bottom: none; padding-bottom: 0; }
+  .drink:first-of-type { padding-top: 0; }
+
+  .drink-main { min-width: 0; }
+
+  .drink-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+  }
+
+  .drink-name {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .drink-strength {
+    font-family: 'Courier Prime', monospace;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .strength-strong { color: var(--red);    background: var(--red-dim);            border: 1px solid rgba(139,32,16,0.25); }
+  .strength-medium { color: #5A7A3A;       background: rgba(90,122,58,0.10);      border: 1px solid rgba(90,122,58,0.25); }
+  .strength-light  { color: #2A6080;       background: rgba(42,96,128,0.10);      border: 1px solid rgba(42,96,128,0.22); }
+
+  .drink-desc {
+    font-size: 15px;
+    color: var(--ink-mid);
+    line-height: 1.68;
+    margin-bottom: 10px;
+  }
+  .drink-desc em {
+    color: var(--ink);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .drink-ingredients {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .ingredient {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    color: var(--ink-dim);
+    background: rgba(42,22,8,0.05);
+    border: 1px solid rgba(42,22,8,0.10);
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  /* ── Footer on the wood ── */
+  .footer {
+    text-align: center;
+    margin-top: 32px;
+    padding: 24px 0;
+  }
+
+  .footer p {
+    font-family: 'Courier Prime', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--parchment);
+    opacity: 0.25;
+    line-height: 2.4;
+  }
+
+  .footer-deco {
+    font-size: 14px;
+    letter-spacing: 12px;
+    color: var(--parchment);
+    opacity: 0.12;
+    margin-bottom: 12px;
+  }
+
+  /* ── Animations ── */
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(14px); box-shadow: none; }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .page { padding: 40px 16px 64px; }
+    .header { padding: 32px 24px 28px; }
+    .menu-panel { padding: 28px 24px; }
+    .drink-name { font-size: 18px; }
+    .section-hint { display: none; }
+    .header h1 { font-size: clamp(34px, 10vw, 60px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <a href="index.html" class="back-link">Home Bar</a>
+
+  <div class="header">
+    <div class="header-eyebrow">Home Bar &nbsp;·&nbsp; Always available</div>
+    <h1>House<br><span class="accent">Classics</span></h1>
+    <div class="header-rule"><div class="diamond"></div></div>
+    <div class="header-sub">The drinks that never go out of season</div>
+  </div>
+
+  <!-- ── STRONG & SHORT ── -->
+  <div class="menu-panel">
+    <div class="section-label">
+      <span class="section-name">Strong &amp; Short</span>
+      <div class="section-line"></div>
+      <span class="section-hint">Neat or on the rocks</span>
+    </div>
+    <p class="section-desc">Spirit-forward, lightly diluted. Sip slowly.</p>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Old Fashioned</div>
+          <span class="drink-strength strength-strong">Strong</span>
+        </div>
+        <div class="drink-desc">
+          Bourbon or rye, barely sweetened, bitters-kissed, finished with an orange peel.
+          The oldest cocktail worth ordering. <em>No muddled fruit.</em>
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2 oz bourbon or rye</span>
+          <span class="ingredient">1 tsp simple syrup</span>
+          <span class="ingredient">2 dashes Angostura</span>
+          <span class="ingredient">orange peel</span>
+          <span class="ingredient">large ice cube</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Negroni</div>
+          <span class="drink-strength strength-strong">Strong</span>
+        </div>
+        <div class="drink-desc">
+          Equal parts gin, sweet vermouth, and Campari. Bitter, herbal, deeply <em>red</em>.
+          The most complete cocktail ever assembled from three ingredients.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">1 oz gin</span>
+          <span class="ingredient">1 oz sweet vermouth</span>
+          <span class="ingredient">1 oz Campari</span>
+          <span class="ingredient">orange peel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Manhattan</div>
+          <span class="drink-strength strength-strong">Strong</span>
+        </div>
+        <div class="drink-desc">
+          Rye and sweet vermouth, stirred long and cold, finished with a cherry.
+          Smoother than its sibling the Old Fashioned, with a <em>quieter kind of power</em>.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2 oz rye whiskey</span>
+          <span class="ingredient">1 oz sweet vermouth</span>
+          <span class="ingredient">2 dashes Angostura</span>
+          <span class="ingredient">brandied cherry</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Martini</div>
+          <span class="drink-strength strength-strong">Strong</span>
+        </div>
+        <div class="drink-desc">
+          Gin and dry vermouth, stirred until very cold, served up with an olive or a twist.
+          Specify your preference — <em>this is not a drink that tolerates ambiguity</em>.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2½ oz gin</span>
+          <span class="ingredient">½ oz dry vermouth</span>
+          <span class="ingredient">olive or lemon twist</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BRIGHT & BALANCED ── -->
+  <div class="menu-panel">
+    <div class="section-label">
+      <span class="section-name">Bright &amp; Balanced</span>
+      <div class="section-line"></div>
+      <span class="section-hint">Shaken, served up or short</span>
+    </div>
+    <p class="section-desc">Citrus-forward, medium strength. The evening's middle ground.</p>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Margarita</div>
+          <span class="drink-strength strength-medium">Medium</span>
+        </div>
+        <div class="drink-desc">
+          Tequila, triple sec, fresh lime. Salt rim optional but recommended.
+          Simple enough to make badly; good enough to make <em>very well</em>.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2 oz blanco tequila</span>
+          <span class="ingredient">¾ oz triple sec</span>
+          <span class="ingredient">¾ oz fresh lime juice</span>
+          <span class="ingredient">salted rim</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Whiskey Sour</div>
+          <span class="drink-strength strength-medium">Medium</span>
+        </div>
+        <div class="drink-desc">
+          Bourbon, lemon juice, a little sweetness. Tart and warming in equal measure.
+          Ask about the <em>egg white</em> — it changes everything.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2 oz bourbon</span>
+          <span class="ingredient">¾ oz fresh lemon juice</span>
+          <span class="ingredient">½ oz simple syrup</span>
+          <span class="ingredient">egg white (optional)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Daiquiri</div>
+          <span class="drink-strength strength-medium">Medium</span>
+        </div>
+        <div class="drink-desc">
+          White rum, fresh lime, simple syrup — shaken hard and served up cold.
+          <em>Nothing frozen.</em> The original is better than what the blender made you think.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2 oz white rum</span>
+          <span class="ingredient">¾ oz fresh lime juice</span>
+          <span class="ingredient">¾ oz simple syrup</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Gimlet</div>
+          <span class="drink-strength strength-medium">Medium</span>
+        </div>
+        <div class="drink-desc">
+          Gin and fresh lime juice, lightly sweetened. Crisp, clean, <em>unforgiving</em>
+          of bad gin. One of the shortest distances between two points in cocktail history.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2 oz gin</span>
+          <span class="ingredient">¾ oz fresh lime juice</span>
+          <span class="ingredient">¾ oz simple syrup</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LONG & EASY ── -->
+  <div class="menu-panel">
+    <div class="section-label">
+      <span class="section-name">Long &amp; Easy</span>
+      <div class="section-line"></div>
+      <span class="section-hint">Tall glass, lower ABV</span>
+    </div>
+    <p class="section-desc">Built over ice, lengthened with soda or wine. Pace yourself, or don't.</p>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Gin &amp; Tonic</div>
+          <span class="drink-strength strength-light">Light</span>
+        </div>
+        <div class="drink-desc">
+          London dry gin, tonic water, lime. The ratio matters more than the recipe.
+          A well-made G&amp;T is <em>always the right decision</em>.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2 oz London dry gin</span>
+          <span class="ingredient">4 oz tonic water</span>
+          <span class="ingredient">lime wedge</span>
+          <span class="ingredient">tall glass, plenty of ice</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Mojito</div>
+          <span class="drink-strength strength-light">Light</span>
+        </div>
+        <div class="drink-desc">
+          White rum, fresh lime, mint, sugar, soda. Refreshing to make, refreshing to drink.
+          Requires <em>actual fresh mint</em> — no substitutions accepted.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2 oz white rum</span>
+          <span class="ingredient">¾ oz fresh lime juice</span>
+          <span class="ingredient">2 tsp sugar</span>
+          <span class="ingredient">8–10 mint leaves</span>
+          <span class="ingredient">soda water to top</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Moscow Mule</div>
+          <span class="drink-strength strength-light">Light</span>
+        </div>
+        <div class="drink-desc">
+          Vodka, ginger beer, lime — traditionally served in a copper mug that keeps it
+          impossibly cold. The ginger does most of the heavy lifting. <em>Good ginger beer matters.</em>
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">2 oz vodka</span>
+          <span class="ingredient">½ oz fresh lime juice</span>
+          <span class="ingredient">4 oz ginger beer</span>
+          <span class="ingredient">lime wheel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="drink">
+      <div class="drink-main">
+        <div class="drink-header">
+          <div class="drink-name">Aperol Spritz</div>
+          <span class="drink-strength strength-light">Light</span>
+        </div>
+        <div class="drink-desc">
+          Aperol, prosecco, a splash of soda. Bittersweet, bright orange, <em>relentlessly cheerful</em>.
+          Best drunk in a large wine glass with too much ice.
+        </div>
+        <div class="drink-ingredients">
+          <span class="ingredient">3 oz prosecco</span>
+          <span class="ingredient">2 oz Aperol</span>
+          <span class="ingredient">1 oz soda water</span>
+          <span class="ingredient">orange slice</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-deco">&#9670; &nbsp; &#9670; &nbsp; &#9670;</div>
+    <p>Always available &nbsp;·&nbsp; No reservation required</p>
+    <p>Please drink responsibly</p>
+  </footer>
+
+</div>
+
+</body>
+</html>
