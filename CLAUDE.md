@@ -25,11 +25,13 @@ Each page has its **own distinct aesthetic** matching its content. Do not force 
 
 ## Shared elements
 
-- **Fonts**: Cinzel (headings), EB Garamond (body), Courier Prime (labels/monospace) — used across all pages for typographic continuity.
-- **Back link**: every menu page has `<a href="index.html" class="back-link">Home Bar</a>` at the top.
-- **`styles.css`**: contains base variables, card components, and animations for event menus. `index.html` and `classics.html` do not use it — they are fully self-contained.
+- **Back link**: the only cross-page requirement. Every menu page must have a link back to `index.html`. Its exact appearance (text, position, style) is up to the page's own aesthetic.
+- There are **no other shared constraints** — fonts, colors, layout, and animations are entirely per-page decisions. Each page is a self-contained design artifact.
+- **`styles.css`** exists as a convenience base for event menus that want to reuse components, but pages are free to ignore it entirely (as `index.html` and `classics.html` do).
 
 ## Index page conventions
+
+The index page is a single page and should remain internally consistent. Its current aesthetic: warm cream (`#FAF6EF`) background, dark ink, large readable fonts — neutral enough to sit alongside menus of any style.
 
 - **House classics card**: wood grain background, parchment text, links to `classics.html`. Always sits above the event menu grid.
 - **Event cards**: white card with a colored `.card-swatch` strip at top. Add a `.swatch-yourtheme` CSS rule per new event.
