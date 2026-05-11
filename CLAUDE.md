@@ -11,6 +11,8 @@ index.html               Landing page (cream/editorial aesthetic)
 classics.html            Permanent classics menu (wood grain aesthetic)
 astronomy-bar-menu.html  Event menu: Event Horizon, April 2026 (dark void/space aesthetic)
 styles.css               Shared base styles (used by event menus only, not index or classics)
+cocktails.db             SQLite cocktail database (regenerate: python db/setup_db.py)
+db/setup_db.py           Creates schema and seeds all cocktail data
 ```
 
 ## Design philosophy
@@ -39,6 +41,80 @@ Each page has its **own distinct aesthetic** matching its content. Do not force 
 - **1 liquid oz ≈ 30 ml.** Convert to oz when the ml amount is a clean multiple (15, 22.5, 30, 45, 60 ml → ½, ¾, 1, 1½, 2 oz).
 - **Stick with ml** when any ingredient uses an odd amount (e.g., 3 ml, 5 ml, 10 ml) — odd amounts mean the whole recipe is easier to read in ml.
 - It is fine to have oz in one drink and ml in another on the same menu. The owner is the one making the drinks and cares about precision; guests don't.
+
+## Cocktail database
+
+### Schema (cocktails.db)
+
+| Table | Purpose |
+|-------|---------|
+| `cocktails` | One row per canonical cocktail. Structured columns: `glass`, `style`, `strength`, `method`, `color`, `origin_country`. |
+| `ingredients` | Ingredient registry with `name` and `category`. |
+| `recipe_lines` | Cocktail ↔ ingredient with `amount_ml`, `unit`, `notes`, `sort_order`. All liquid amounts in ml. For dashes, `amount_ml` = count of dashes; for garnishes, `amount_ml` = NULL and `unit` = `piece`/`leaf`/`rim`/`top`/`float`. |
+| `aliases` | Alternative names for a cocktail, with optional `context` (e.g., which event menu). |
+| `tags` | Extensible label registry: `name` (unique) + `category`. |
+| `cocktail_tags` | Cocktail ↔ tag many-to-many. |
+| `relations` | Connections: `sibling` (symmetric, lower id in `cocktail_id_a`), `variant_of` (A is a variant of B), `inspired_by`. |
+
+### Tag categories and current vocabulary
+
+| Category | Values (extend freely) |
+|----------|------------------------|
+| `flavor` | bitter, sweet, sour, dry, citrus-forward, spirit-forward, herbal, spicy, smoky, fruity, umami, refreshing |
+| `occasion` | aperitif, digestif, summer, winter, brunch, celebratory, all-season |
+| `era` | pre-prohibition, prohibition-era, classic, modern, contemporary |
+| `cultural` | american, cuban, british, japanese, french, italian, mexican, spanish |
+| `technique` | egg-white, carbonated, layered, dry-shake, float, muddled |
+| `aesthetic` | blue, red, green, amber, clear, orange, visually-striking, elegant |
+| `other` | tribute (and anything that doesn't fit above) |
+
+New tags must be inserted into the `tags` table before being attached to a cocktail. Add new tags to both `TAGS` in `db/setup_db.py` and to the table above.
+
+### AI agent workflow — adding a cocktail
+
+When the user says "add [cocktail] to the database":
+
+1. **Check for duplicates**: query `cocktails` (case-insensitive `name`) and `aliases` (`alias_name`). If found, report and stop.
+2. **Gather info**: search online if needed for recipe, origin, glassware, and history.
+3. **Insert cocktail row**: populate all structured columns (`glass`, `style`, `strength`, `method`, `color`, `origin_country`, `notes`).
+4. **Insert ingredients**: for each ingredient, check `ingredients` table first to avoid duplicates, then insert into `recipe_lines`. Use ml for all liquid amounts. Use `dash`/`piece`/`leaf`/`top`/`float` units for non-liquid items.
+5. **Add aliases**: if the cocktail has known alternative names, insert into `aliases`.
+6. **Generate tags**: based on online research and knowledge, assign tags from the vocabulary above. Create new tags if genuinely needed. Aim for 5–10 tags per cocktail.
+7. **Add relations**: check existing cocktails for family connections (same base spirit, same template, variant). Insert into `relations` with appropriate type.
+
+### Useful query patterns
+
+```sql
+-- Menu by theme (e.g., 1920s night)
+SELECT c.name, c.strength, c.style FROM cocktails c
+JOIN cocktail_tags ct ON ct.cocktail_id = c.id
+JOIN tags t ON t.id = ct.tag_id
+WHERE t.name IN ('pre-prohibition', 'prohibition-era', 'classic')
+ORDER BY c.strength DESC;
+
+-- Menu by origin (e.g., Japanese cultural menu)
+SELECT c.name FROM cocktails c
+JOIN cocktail_tags ct ON ct.cocktail_id = c.id
+JOIN tags t ON t.id = ct.tag_id
+WHERE t.name = 'japanese' OR c.origin_country = 'Japan';
+
+-- Cocktail web (all relations for visualization)
+SELECT ca.name, r.relation_type, cb.name, r.notes
+FROM relations r
+JOIN cocktails ca ON ca.id = r.cocktail_id_a
+JOIN cocktails cb ON cb.id = r.cocktail_id_b;
+
+-- Full recipe for a cocktail
+SELECT i.name, rl.amount_ml, rl.unit, rl.notes
+FROM recipe_lines rl
+JOIN ingredients i ON i.id = rl.ingredient_id
+WHERE rl.cocktail_id = (SELECT id FROM cocktails WHERE name = 'Negroni')
+ORDER BY rl.sort_order;
+
+-- Find all aliases (event menu names → canonical names)
+SELECT a.alias_name, c.name, a.context
+FROM aliases a JOIN cocktails c ON c.id = a.cocktail_id;
+```
 
 ## Adding a new event menu
 
