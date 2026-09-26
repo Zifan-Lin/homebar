@@ -9,6 +9,7 @@ A personal GitHub Pages site for themed home bar events. Live at **https://zifan
 | `index.html` | `/homebar/` | Landing page — links to all menus |
 | `classics.html` | `/homebar/classics.html` | Permanent house classics menu |
 | `astronomy-bar-menu.html` | `/homebar/astronomy-bar-menu.html` | Event Horizon — April 2026 |
+| `mid-autumn-bar-menu.html` | `/homebar/mid-autumn-bar-menu.html` | Inviting the Moon — September 2026 |
 
 ## Adding a new event menu
 

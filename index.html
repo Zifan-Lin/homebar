@@ -150,6 +150,16 @@
     color: rgba(196,150,58,0.75);
   }
 
+  /* Mid-Autumn: indigo night with a rising harvest moon */
+  .swatch-midautumn {
+    background:
+      radial-gradient(circle at 84% 46%, #F6E3AE 0 20px, rgba(246,227,174,0.22) 21px, transparent 46px),
+      linear-gradient(160deg, #0A1234 0%, #04071A 100%);
+  }
+  .swatch-midautumn .swatch-label {
+    color: rgba(243,223,168,0.8);
+  }
+
   /* Placeholder swatches for future themes */
   .swatch-beach {
     background: linear-gradient(135deg, #8EC5D6 0%, #D4A96A 100%);
@@ -427,10 +437,28 @@
   <!-- ── Event menus ── -->
   <div class="section-header">
     <span class="section-title">Past Events</span>
-    <span class="section-count">1 event</span>
+    <span class="section-count">2 events</span>
   </div>
 
   <div class="event-grid">
+
+    <a href="mid-autumn-bar-menu.html" class="event-card">
+      <div class="card-swatch swatch-midautumn">
+        <span class="swatch-label">Mid-Autumn</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-date">September 2026</span>
+          <span class="card-vol">Vol. II</span>
+        </div>
+        <div class="card-name">Inviting the Moon</div>
+        <div class="card-desc">
+          A Mid-Autumn Festival menu of lanterns, osmanthus, and the legends of Chang’e and the Jade Rabbit.
+          The moon waxes as you scroll.
+        </div>
+        <div class="card-cta">Open menu</div>
+      </div>
+    </a>
 
     <a href="astronomy-bar-menu.html" class="event-card">
       <div class="card-swatch swatch-astronomy">

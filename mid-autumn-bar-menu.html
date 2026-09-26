@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>邀月 · Inviting the Moon — 中秋酒单</title>
+<meta name="description" content="中秋酒单。月亮随着滚动渐渐圆满。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky-top:    #04071A;
+    --sky-mid:    #0A1234;
+    --sky-low:    #121C46;
+    --moon:       #F3DFA8;
+    --moon-dim:   rgba(243,223,168,0.55);
+    --osmanthus:  #E0A842;
+    --cinnabar:   #B42D22;
+    --seal-ink:   #F7E9CB;
+    --text:       #ECE5D2;
+    --text-mid:   #B4B8C9;
+    --text-dim:   #737C98;
+    --line:       rgba(243,223,168,0.14);
+    --line-hl:    rgba(243,223,168,0.42);
+    --card:       rgba(10,16,44,0.52);
+    --card-hover: rgba(14,22,58,0.66);
+    --zh:         'Noto Serif SC', 'Songti SC', 'STSong', serif;
+    --brush:      'Ma Shan Zheng', 'Noto Serif SC', serif;
+    --en:         'Cormorant Garamond', Georgia, serif;
+    --page-top:   24px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--sky-top);
+    color: var(--text);
+    font-family: var(--zh);
+    font-size: 17px;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Secondary English: small, italic, quiet */
+  .en {
+    font-family: var(--en);
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--text-dim);
+  }
+
+  /* ── Sky layers (fixed, behind everything) ── */
+  .sky-bg {
+    position: fixed; inset: 0; z-index: -3;
+    background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, var(--sky-low) 100%);
+  }
+  .moonlight {
+    position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background: radial-gradient(circle at var(--mx, 25vw) var(--my, 45vh),
+      rgba(150,170,230,0.20) 0%, rgba(90,110,180,0.08) 30%, transparent 60%);
+    opacity: 0.1;
+    transition: opacity 0.2s linear;
+  }
+  #sky {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    width: 100%; height: 100%;
+  }
+
+  /* ── The moon ── */
+  .moon-stage {
+    position: fixed; left: 0; top: 0;
+    z-index: 5;
+    pointer-events: none;
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+  .moon-halo {
+    position: absolute; inset: -45%;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+      rgba(255,236,190,0.30) 0%, rgba(255,225,170,0.14) 28%,
+      rgba(160,180,240,0.06) 46%, transparent 68%);
+    opacity: 0.2;
+  }
+  #moon {
+    position: relative;
+    display: block;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+  }
+  #moon.fallback {
+    background: radial-gradient(circle closest-side, #F6E6BC 0 97%, transparent 100%);
+  }
+  .moon-caption {
+    position: absolute;
+    top: calc(100% + 26px);
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+  }
+  .moon-day {
+    font-size: 18px;
+    letter-spacing: 0.3em;
+    color: var(--moon);
+  }
+  .moon-phase {
+    margin-top: 2px;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--text-mid);
+  }
+  .moon-phase .pct { letter-spacing: 0.04em; color: var(--text-dim); font-family: var(--en); font-size: 15px; font-variant-numeric: lining-nums tabular-nums; }
+
+  /* ── Page column ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: var(--page-top) 16px 120px;
+  }
+
+  /* ── Back link ── */
+  .back-link {
+    position: relative;
+    z-index: 6;
+    display: flex;
+    width: fit-content;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--moon);
+    opacity: 0.6;
+    text-decoration: none;
+    transition: opacity 0.3s;
+  }
+  .back-link:hover { opacity: 1; }
+  .back-link::before { content: '←'; letter-spacing: 0; }
+  .back-link .en { font-style: normal; font-size: 15px; letter-spacing: 0.16em; text-transform: uppercase; color: inherit; }
+
+  /* ── Lanterns ── */
+  .lanterns {
+    position: absolute;
+    top: calc(-1 * var(--page-top));
+    right: 4px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    pointer-events: none;
+  }
+  .lantern {
+    --len: 40px;
+    width: 40px;
+    transform-origin: 50% 0;
+    animation: swing 5.5s ease-in-out infinite alternate;
+  }
+  .lantern::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: var(--len);
+    margin: 0 auto;
+    background: linear-gradient(rgba(224,168,66,0), rgba(224,168,66,0.7));
+  }
+  .lantern svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: -1px;
+    filter: drop-shadow(0 0 14px rgba(255,96,48,0.45));
+  }
+  .lantern:nth-child(2) { --len: 78px; width: 32px; animation-duration: 6.8s; animation-delay: -2s; }
+  .lantern:nth-child(3) { --len: 22px; width: 26px; animation-duration: 4.9s; animation-delay: -3.4s; }
+  @keyframes swing {
+    from { transform: rotate(-3.5deg); }
+    to   { transform: rotate(3.5deg); }
+  }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding-bottom: 56px;
+  }
+  .moon-spacer {
+    width: min(72vw, 42vh, 340px);
+    height: min(72vw, 42vh, 340px);
+    width: min(72vw, 42svh, 340px);
+    height: min(72vw, 42svh, 340px);
+    margin: 36px auto 96px;
+  }
+  .eyebrow {
+    font-size: 15px;
+    letter-spacing: 0.5em;
+    color: var(--osmanthus);
+    margin-bottom: 14px;
+  }
+  .title { font-weight: 400; line-height: 1; }
+  .title-row {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .title-zh {
+    font-family: var(--brush);
+    font-size: clamp(96px, 28vw, 160px);
+    line-height: 0.95;
+    color: var(--moon);
+    text-shadow: 0 0 40px rgba(243,223,168,0.25);
+  }
+  .title-en {
+    display: block;
+    margin-top: 12px;
+    font-size: clamp(20px, 5vw, 26px);
+    color: var(--moon-dim);
+  }
+  .seal {
+    display: inline-block;
+    writing-mode: vertical-rl;
+    font-family: var(--zh);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--seal-ink);
+    background: var(--cinnabar);
+    border-radius: 3px;
+    box-shadow: inset 0 0 0 2px var(--cinnabar), inset 0 0 0 3.5px rgba(247,233,203,0.8);
+    transform: rotate(-3deg);
+  }
+  .title-seal { font-size: 17px; letter-spacing: 4px; padding: 9px 7px 5px; margin-top: 14px; }
+  .date {
+    margin-top: 24px;
+    font-size: 16px;
+    letter-spacing: 0.14em;
+    color: var(--text-mid);
+  }
+  .date span { display: block; }
+  .date .lunar { color: var(--moon-dim); }
+
+  /* Verse: vertical, read right to left */
+  .verse {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 18px;
+    margin: 48px auto 0;
+  }
+  .verse-zh {
+    writing-mode: vertical-rl;
+    font-family: var(--brush);
+    font-size: 34px;
+    line-height: 1.55;
+    letter-spacing: 0.14em;
+    color: var(--moon);
+  }
+  .verse-attr {
+    writing-mode: vertical-rl;
+    font-size: 14px;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+  }
+
+  /* ── Intro ── */
+  .intro {
+    margin-bottom: 96px;
+    font-size: 17px;
+    color: var(--text-mid);
+  }
+  .intro p + p { margin-top: 18px; }
+  .intro em { font-style: normal; color: var(--text); }
+  .tonight {
+    margin: 40px 0 0;
+    padding: 24px 24px 22px;
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--cinnabar);
+    background: linear-gradient(100deg, rgba(180,45,34,0.10), rgba(10,16,44,0.35) 60%);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .tonight-zh {
+    display: block;
+    font-family: var(--brush);
+    font-size: 32px;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    color: var(--moon);
+    margin-bottom: 10px;
+  }
+  .tonight p { font-size: 16px; color: var(--text-mid); }
+  .tonight .num { font-family: var(--en); font-size: 1.1em; font-variant-numeric: lining-nums; }
+  .scroll-hint {
+    margin-top: 44px;
+    text-align: center;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+  }
+  .scroll-hint::after {
+    content: '';
+    display: block;
+    width: 1px; height: 44px;
+    margin: 14px auto 0;
+    background: linear-gradient(var(--moon-dim), transparent);
+  }
+
+  /* ── Phase sections ── */
+  .phase { margin-bottom: 88px; }
+  .phase-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase-icon { width: 46px; height: 46px; flex-shrink: 0; }
+  .phase-zh {
+    font-size: 13px;
+    letter-spacing: 0.35em;
+    color: var(--osmanthus);
+  }
+  .phase-title {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2px 14px;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.12em;
+    color: var(--text);
+  }
+  .phase-title .en { font-size: 19px; font-weight: 500; letter-spacing: 0.02em; }
+  .phase-note {
+    margin: 0 0 26px;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+  }
+  .epigraph {
+    margin: 0 0 28px;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+  .epigraph .line {
+    display: block;
+    font-family: var(--brush);
+    font-size: 26px;
+    letter-spacing: 0.1em;
+    color: var(--moon);
+  }
+
+  /* ── Drink cards ── */
+  .drink {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 18px;
+    padding: 24px 22px 22px 18px;
+    margin-bottom: 16px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+  .drink:hover { background: var(--card-hover); border-color: var(--line-hl); }
+  .drink-seal {
+    font-size: 17px;
+    padding: 7px 7px;
+    align-self: start;
+    justify-self: center;
+    margin-top: 6px;
+  }
+  .drink-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0 12px;
+  }
+  .drink-name {
+    font-size: 27px;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0.08em;
+    color: var(--text);
+  }
+  .drink-en {
+    font-size: 19px;
+    color: var(--osmanthus);
+    opacity: 0.85;
+  }
+  .drink-desc {
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.95;
+    color: var(--text-mid);
+  }
+  .drink-desc em { font-style: normal; color: var(--text); }
+  .recipe {
+    list-style: none;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px 20px;
+    font-size: 15px;
+    color: var(--text-mid);
+  }
+  .recipe b {
+    font-family: var(--en);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--moon);
+    display: inline-block;
+    min-width: 66px;
+    font-variant-numeric: lining-nums;
+  }
+  .recipe b.zh { font-family: var(--zh); font-size: 14px; font-weight: 500; letter-spacing: 0.1em; }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 120px;
+    padding-top: 56px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  .footer-verse {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 18px;
+  }
+  .footer-verse .verse-zh { font-size: 40px; text-shadow: 0 0 30px rgba(243,223,168,0.2); }
+  .footer-seal { font-size: 15px; letter-spacing: 3px; padding: 8px 6px 4px; margin: 44px 0 24px; }
+  .footer-fine {
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    color: var(--text-dim);
+    line-height: 2.2;
+  }
+
+  /* ── Desktop: moon owns the left half, menu scrolls on the right ── */
+  @media (min-width: 960px) {
+    :root { --page-top: 64px; }
+    .page {
+      max-width: none;
+      width: min(600px, 44vw);
+      margin: 0 0 0 51vw;
+      padding: var(--page-top) 0 160px;
+    }
+    .moon-spacer { display: none; }
+    .hero { text-align: left; padding-bottom: 72px; }
+    .hero .back-link { margin-bottom: 96px; }
+    .date span { display: inline; }
+    .date span + span::before { content: '·'; margin: 0 10px; color: var(--osmanthus); }
+    .verse { justify-content: flex-start; }
+    .lanterns { right: -2vw; gap: 16px; }
+    .lantern { width: 54px; --len: 60px; }
+    .lantern:nth-child(2) { width: 42px; --len: 120px; }
+    .lantern:nth-child(3) { width: 34px; --len: 34px; }
+    .drink { grid-template-columns: 40px 1fr; gap: 22px; padding: 28px 30px 26px 22px; }
+    .drink-seal { font-size: 19px; }
+    .footer { text-align: left; }
+    .footer-verse { justify-content: flex-start; }
+  }
+
+  /* Two recipe columns only once the menu column is wide enough for long names */
+  @media (min-width: 1360px) {
+    .recipe { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lantern { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky-bg"></div>
+<div class="moonlight"></div>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<!-- The moon: rendered per-pixel in JS, waxes with scroll position. -->
+<div class="moon-stage" aria-hidden="true">
+  <div class="moon-halo"></div>
+  <canvas id="moon" class="fallback"></canvas>
+  <div class="moon-caption">
+    <div class="moon-day">八月初三</div>
+    <div class="moon-phase">蛾眉月 <span class="pct">· 4%</span></div>
+  </div>
+</div>
+
+<!-- Shared lantern artwork -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="lanternBody" cx="0.42" cy="0.4" r="0.66">
+      <stop offset="0"    stop-color="#FF9152"/>
+      <stop offset="0.45" stop-color="#D5301E"/>
+      <stop offset="1"    stop-color="#7A1109"/>
+    </radialGradient>
+    <symbol id="lantern" viewBox="0 0 64 122">
+      <rect x="27" y="0" width="10" height="4" rx="1" fill="#C99A3A"/>
+      <path d="M20 4 H44 L47 11 H17 Z" fill="#D6A640"/>
+      <ellipse cx="32" cy="44" rx="30" ry="33" fill="url(#lanternBody)"/>
+      <ellipse cx="32" cy="44" rx="20" ry="33" fill="none" stroke="rgba(90,8,4,0.35)" stroke-width="1"/>
+      <ellipse cx="32" cy="44" rx="9"  ry="33" fill="none" stroke="rgba(90,8,4,0.3)"  stroke-width="1"/>
+      <ellipse cx="23" cy="33" rx="8"  ry="14" fill="rgba(255,225,170,0.16)"/>
+      <path d="M17 77 H47 L44 84 H20 Z" fill="#D6A640"/>
+      <rect x="29" y="86" width="6" height="4" rx="1" fill="#D6A640"/>
+      <g stroke="#C8352A" stroke-width="1.2" stroke-linecap="round">
+        <path d="M32 90 L27.5 119 M32 90 L29.8 120 M32 90 L32 120.5 M32 90 L34.2 120 M32 90 L36.5 119"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="page">
+
+  <header class="hero">
+    <a href="index.html" class="back-link">返回 <span class="en" lang="en">Home Bar</span></a>
+
+    <div class="lanterns" aria-hidden="true">
+      <span class="lantern"><svg viewBox="0 0 64 122"><use href="#lantern"/><text x="32" y="52" text-anchor="middle" font-size="21" fill="#F6D27A" font-family="Ma Shan Zheng, serif">圆</text></svg></span>
+      <span class="lantern"><svg viewBox="0 0 64 122"><use href="#lantern"/><text x="32" y="52" text-anchor="middle" font-size="21" fill="#F6D27A" font-family="Ma Shan Zheng, serif">月</text></svg></span>
+      <span class="lantern"><svg viewBox="0 0 64 122"><use href="#lantern"/></svg></span>
+    </div>
+
+    <div class="moon-spacer"></div>
+
+    <p class="eyebrow">丙午年 · 中秋</p>
+    <h1 class="title">
+      <span class="title-row">
+        <span class="title-zh">邀月</span>
+        <span class="seal title-seal">中秋</span>
+      </span>
+      <span class="title-en en" lang="en">Inviting the Moon</span>
+    </h1>
+    <p class="date"><span>2026年9月26日 星期六</span><span class="lunar">农历八月十六</span></p>
+
+    <figure class="verse">
+      <figcaption class="verse-attr">李白《月下独酌》</figcaption>
+      <blockquote class="verse-zh">举杯邀明月<br>对影成三人</blockquote>
+    </figure>
+  </header>
+
+  <section class="intro">
+    <p>农历八月十五，秋收已毕，天高气清，一年中最圆最亮的月亮挂在天上。这一晚，家人团聚，<em>分食月饼</em>，孩子们<em>提着灯笼</em>走街串巷——无论身在何处，抬头看见的都是同一轮明月。
+    </p>
+    <p>今晚的每一杯酒，都连着一个中秋的故事：住在月亮上的仙子、陪伴她的玉兔，还有那个永远砍不倒桂树的吴刚。
+    </p>
+
+    <aside class="tonight">
+      <span class="tonight-zh">十五的月亮十六圆</span>
+      <p>今晚是八月十六。今年这句老话恰好应验：月亮在今天上午<span class="num">11:49</span>（美国中部时间）正圆，所以今晚升起的月亮，比中秋当晚还要更圆一点。
+      </p>
+    </aside>
+
+    <p class="scroll-hint">慢慢往下滑 · 月亮会渐渐圆满</p>
+  </section>
+
+  <!--
+    DRINKS — generated from one list; classic names in Chinese + English.
+    Recipes mirror cocktails.db (aliases context: "Inviting the Moon menu").
+  -->
+
+  <!-- ── 蛾眉 · Crescent — Long & Easy ── -->
+  <section class="phase" data-day="5">
+    <div class="phase-head">
+      <svg class="phase-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" fill="none" stroke="rgba(243,223,168,0.25)" stroke-width="0.6"/>
+        <path d="M12 2 A10 10 0 0 1 12 22 A6.5 10 0 0 0 12 2 Z" fill="#F3DFA8"/>
+      </svg>
+      <div>
+        <div class="phase-zh">初五 · 蛾眉月</div>
+        <h2 class="phase-title">悠长轻松 <span class="en" lang="en">Long &amp; Easy</span></h2>
+      </div>
+    </div>
+    <p class="phase-note">新月如眉，夜色尚早。高杯多冰，慢慢来。</p>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">壹</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">柑橘清凉</h3>
+          <span class="drink-en en" lang="en">Citrus Cooler</span>
+        </div>
+        <p class="drink-desc">赏月急不得，要在院子里坐上好一阵，等月亮<em>慢慢爬过屋檐</em>。西柚配接骨木花，清清淡淡，正好陪你等。</p>
+        <ul class="recipe">
+          <li><b>2 oz</b>西柚利口酒</li>
+          <li><b>1 oz</b>伏特加</li>
+          <li><b>1 oz</b>接骨木花利口酒</li>
+          <li><b>2 oz</b>苏打水</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">贰</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">夏日微风</h3>
+          <span class="drink-en en" lang="en">Summer Breeze</span>
+        </div>
+        <p class="drink-desc">八月的风已经带了凉意，夏天却还没走远。龙舌兰、西柚、接骨木花——这是<em>夏天留下的最后一阵风</em>。</p>
+        <ul class="recipe">
+          <li><b>2 oz</b>白龙舌兰</li>
+          <li><b>¾ oz</b>接骨木花利口酒</li>
+          <li><b>¾ oz</b>西柚利口酒</li>
+          <li><b>¾ oz</b>鲜榨青柠汁</li>
+          <li><b>4 oz</b>苏打水</li>
+          <li><b class="zh">装饰</b>青柠轮</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">叁</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">荔枝瑞奇</h3>
+          <span class="drink-en en" lang="en">Lychee Rickey</span>
+        </div>
+        <p class="drink-desc">嫦娥的丈夫后羿，曾一口气<em>射下九个太阳</em>，天下这才凉快下来。高杯、多冰、苏打水——射日之后的第一口凉意。</p>
+        <ul class="recipe">
+          <li><b>2 oz</b>金酒</li>
+          <li><b>1 oz</b>荔枝利口酒</li>
+          <li><b>½ oz</b>鲜榨青柠汁</li>
+          <li><b>2 oz</b>苏打水</li>
+          <li><b class="zh">装饰</b>长条青柠皮</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">肆</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">蓝色泻湖</h3>
+          <span class="drink-en en" lang="en">Blue Lagoon</span>
+        </div>
+        <p class="drink-desc">西湖有“<em>三潭印月</em>”：中秋夜，湖心三座石塔点起烛光，塔影、灯影、月影一齐落在水面，一时分不清哪个才是真的月亮。这一杯是那片湖水的颜色。</p>
+        <ul class="recipe">
+          <li><b>40 ml</b>伏特加</li>
+          <li><b>30 ml</b>蓝橙力娇酒</li>
+          <li><b>20 ml</b>鲜榨青柠汁</li>
+          <li><b>10 ml</b>鲜榨柠檬汁</li>
+          <li><b>75 ml</b>苏打水</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">伍</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">接骨木花柯林斯</h3>
+          <span class="drink-en en" lang="en">Elderflower Collins</span>
+        </div>
+        <p class="drink-desc">“<em>花好月圆</em>”是中秋最常听到的祝福：花正盛开，月正圆满。接骨木花的香气配上金酒和柠檬——花已经好了，月也快圆了。</p>
+        <ul class="recipe">
+          <li><b>2 oz</b>金酒</li>
+          <li><b>1 oz</b>鲜榨柠檬汁</li>
+          <li><b>¾ oz</b>接骨木花利口酒</li>
+          <li><b>3–4 oz</b>苏打水</li>
+          <li><b class="zh">装饰</b>柠檬皮（可选）</li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── 上弦 · First Quarter — Bright & Balanced ── -->
+  <section class="phase" data-day="8.4">
+    <div class="phase-head">
+      <svg class="phase-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" fill="none" stroke="rgba(243,223,168,0.25)" stroke-width="0.6"/>
+        <path d="M12 2 A10 10 0 0 1 12 22 Z" fill="#F3DFA8"/>
+      </svg>
+      <div>
+        <div class="phase-zh">初八 · 上弦月</div>
+        <h2 class="phase-title">明快均衡 <span class="en" lang="en">Bright &amp; Balanced</span></h2>
+      </div>
+    </div>
+    <p class="phase-note">月半明半暗，杯中也酸甜各半。</p>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">陆</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">威士忌酸</h3>
+          <span class="drink-en en" lang="en">Whiskey Sour</span>
+        </div>
+        <p class="drink-desc">吴刚受罚，在月宫砍伐<em>桂树</em>，斧起即愈，永无尽头。威士忌酸也是这样：刚喝完，就想再点一杯。</p>
+        <ul class="recipe">
+          <li><b>2 oz</b>波本威士忌</li>
+          <li><b>¾ oz</b>鲜榨柠檬汁</li>
+          <li><b>½ oz</b>糖浆</li>
+          <li><b class="zh">可选</b>蛋清</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">柒</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">蓝色玛格丽特</h3>
+          <span class="drink-en en" lang="en">Blue Margarita</span>
+        </div>
+        <p class="drink-desc">“嫦娥应悔偷灵药，<em>碧海青天夜夜心</em>。”李商隐猜，嫦娥每晚在月宫里望着碧海青天，大概有点后悔。这一杯就是那片碧海青天。</p>
+        <ul class="recipe">
+          <li><b>2 oz</b>微陈龙舌兰</li>
+          <li><b>1 oz</b>蓝橙力娇酒</li>
+          <li><b>1 oz</b>鲜榨青柠汁</li>
+          <li><b>¾ oz</b>糖浆</li>
+          <li><b class="zh">做法</b>加碎冰打成冰沙</li>
+          <li><b class="zh">装饰</b>青柠片</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">捌</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">西柚玛格丽特</h3>
+          <span class="drink-en en" lang="en">Grapefruit Margarita</span>
+        </div>
+        <p class="drink-desc">中秋要吃<em>柚子</em>：“柚”与“佑”同音，是保佑平安的意思；小时候还会把柚子皮做成帽子戴在头上。西柚是柚子的后代，这一杯也算讨个好彩头。</p>
+        <ul class="recipe">
+          <li><b>2 oz</b>西柚利口酒</li>
+          <li><b>1½ oz</b>白龙舌兰</li>
+          <li><b>1 oz</b>鲜榨青柠汁</li>
+          <li><b>½ oz</b>橙味利口酒</li>
+          <li><b class="zh">杯口</b>盐边或糖边</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">玖</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">日本拖鞋</h3>
+          <span class="drink-en en" lang="en">Japanese Slipper</span>
+        </div>
+        <p class="drink-desc">日本也在同一晚赏月，叫做“<em>月見</em>”——只是在日本的传说里，月亮上的兔子捣的不是仙药，而是年糕。至于这杯酒，虽然叫日本拖鞋，其实诞生在澳大利亚墨尔本。</p>
+        <ul class="recipe">
+          <li><b>1 oz</b>橙味利口酒</li>
+          <li><b>1 oz</b>蜜瓜利口酒</li>
+          <li><b>1 oz</b>鲜榨柠檬汁</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">拾</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">蜜瓜酸</h3>
+          <span class="drink-en en" lang="en">Midori Sour</span>
+        </div>
+        <p class="drink-desc">旧时中秋<em>拜月</em>，供桌上除了月饼，还有切成莲花瓣形状的西瓜。蜜瓜利口酒加青柠与柠檬，是供桌上那一抹绿。</p>
+        <ul class="recipe">
+          <li><b>2 oz</b>蜜瓜利口酒</li>
+          <li><b>½ oz</b>鲜榨青柠汁</li>
+          <li><b>½ oz</b>鲜榨柠檬汁</li>
+          <li><b>2 oz</b>苏打水</li>
+          <li><b class="zh">装饰</b>青柠片（可选）</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">拾壹</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">蜜瓜玛格丽特</h3>
+          <span class="drink-en en" lang="en">Midori Margarita</span>
+        </div>
+        <p class="drink-desc">有些地方中秋夜有“<em>摸秋</em>”的习俗：趁着月色到别人的瓜田里摸一个瓜回来，讨个吉利，主人也不会怪罪。这一杯里的瓜，不用去摸。</p>
+        <ul class="recipe">
+          <li><b>1½ oz</b>白龙舌兰</li>
+          <li><b>1 oz</b>蜜瓜利口酒</li>
+          <li><b>1 oz</b>鲜榨青柠汁</li>
+          <li><b>½ oz</b>糖浆</li>
+          <li><b class="zh">装饰</b>青柠轮</li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── 望 · Full Moon — Strong & Short ── -->
+  <section class="phase" data-day="12.5">
+    <div class="phase-head">
+      <svg class="phase-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" fill="#F3DFA8"/>
+      </svg>
+      <div>
+        <div class="phase-zh">十五 · 望月</div>
+        <h2 class="phase-title">浓烈短饮 <span class="en" lang="en">Strong &amp; Short</span></h2>
+      </div>
+    </div>
+    <p class="epigraph">
+      <span class="line">明月几时有？把酒问青天。</span>
+      苏轼《水调歌头》
+    </p>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">拾贰</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">马天尼</h3>
+          <span class="drink-en en" lang="en">Martini</span>
+        </div>
+        <p class="drink-desc">嫦娥所居的<em>广寒宫</em>，清冷、寂静、银白一片。搅拌至杯壁结霜；一片柠檬皮，是这座宫殿里仅有的一点暖意。</p>
+        <ul class="recipe">
+          <li><b>2½ oz</b>金酒</li>
+          <li><b>½ oz</b>干味美思</li>
+          <li><b class="zh">装饰</b>柠檬皮</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">拾叁</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">荔枝马天尼</h3>
+          <span class="drink-en en" lang="en">Lychee Martini</span>
+        </div>
+        <p class="drink-desc">相传唐玄宗曾在中秋夜<em>梦游月宫</em>，听见仙乐，醒来谱成《霓裳羽衣曲》，由杨贵妃起舞。“一骑红尘妃子笑，无人知是荔枝来”——她最爱的荔枝，就在这杯里。</p>
+        <ul class="recipe">
+          <li><b>1½ oz</b>伏特加</li>
+          <li><b>1½ oz</b>荔枝利口酒</li>
+          <li><b>1 dash</b>鲜榨青柠汁</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="drink">
+      <span class="seal drink-seal" aria-hidden="true">拾肆</span>
+      <div>
+        <div class="drink-head">
+          <h3 class="drink-name">古典</h3>
+          <span class="drink-en en" lang="en">Old Fashioned</span>
+        </div>
+        <p class="drink-desc">月饼浓郁香甜，一个人吃不完，所以要切成小块，<em>全家分着吃</em>。古典也是一样：浓、甜、慢，适合大家围坐在一起，一小口一小口地喝。</p>
+        <ul class="recipe">
+          <li><b>60 ml</b>波本威士忌</li>
+          <li><b>5 ml</b>糖浆</li>
+          <li><b>2 dash</b>安格斯特拉苦精</li>
+          <li><b class="zh">冰</b>大冰块</li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <footer class="footer" data-day="15">
+    <div class="footer-verse">
+      <span class="verse-attr">苏轼《水调歌头》</span>
+      <span class="verse-zh">但愿人长久<br>千里共婵娟</span>
+    </div>
+    <span class="seal footer-seal" aria-hidden="true">团圆</span>
+    <p class="footer-fine">饮酒适量<br>月有阴晴圆缺，下个月还会再圆</p>
+  </footer>
+
+</div>
+
+<script>
+(() => {
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a = 0, b = 1) => v < a ? a : v > b ? b : v;
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const easeInOut = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  const SYNODIC = 29.530589;
+
+  const stage   = document.querySelector('.moon-stage');
+  const halo    = document.querySelector('.moon-halo');
+  const caption = document.querySelector('.moon-caption');
+  const dayEl   = document.querySelector('.moon-day');
+  const phaseEl = document.querySelector('.moon-phase');
+  const spacer  = document.querySelector('.moon-spacer');
+  const light   = document.querySelector('.moonlight');
+  const root    = document.documentElement;
+
+  /* ───────── Moon texture + per-pixel lighting ───────── */
+
+  function mulberry32(a) {
+    return () => {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  // Maria as [x, y, rx, ry, darkness, rotation] in unit-disk coords (north up).
+  // Roughly where the real ones are — which is also where the Jade Rabbit lives.
+  const MARIA = [
+    [-0.52, -0.02, 0.26, 0.42, 0.40,  0.20], // Oceanus Procellarum
+    [-0.66, -0.30, 0.10, 0.18, 0.28,  0.00],
+    [-0.30, -0.42, 0.26, 0.22, 0.46, -0.30], // Imbrium
+    [ 0.16, -0.40, 0.15, 0.15, 0.48,  0.00], // Serenitatis
+    [ 0.30, -0.08, 0.20, 0.17, 0.46,  0.40], // Tranquillitatis
+    [ 0.66, -0.30, 0.10, 0.08, 0.52,  0.00], // Crisium
+    [ 0.55,  0.14, 0.12, 0.17, 0.40,  0.30], // Fecunditatis
+    [ 0.34,  0.30, 0.08, 0.09, 0.38,  0.00], // Nectaris
+    [-0.18,  0.32, 0.16, 0.13, 0.36,  0.00], // Nubium
+    [-0.55,  0.35, 0.08, 0.08, 0.40,  0.00], // Humorum
+    [-0.02, -0.72, 0.40, 0.08, 0.22,  0.05], // Frigoris
+    [ 0.02, -0.18, 0.08, 0.06, 0.36,  0.00], // Vaporum
+  ];
+
+  const moonCv = document.getElementById('moon');
+  const mctx = moonCv.getContext('2d');
+  let N = 0, albedo, nxA, nzA, edgeA, img, lastPhi = -1;
+
+  function buildMoon(size) {
+    N = size;
+    const R = N / 2;
+    moonCv.width = moonCv.height = N;
+
+    // Paint the albedo map at reduced resolution, then upscale: a free, soft blur.
+    const T = Math.round(N * 0.5), TR = T / 2;
+    const c = document.createElement('canvas');
+    c.width = c.height = T;
+    const g = c.getContext('2d');
+    const rnd = mulberry32(815);
+
+    g.fillStyle = 'rgb(232,232,232)';
+    g.fillRect(0, 0, T, T);
+
+    const blob = (x, y, rx, ry, a, rot, col = '60,58,56') => {
+      g.save();
+      g.translate(TR + x * TR, TR + y * TR);
+      g.rotate(rot);
+      g.scale(rx * TR, ry * TR);
+      const grd = g.createRadialGradient(0, 0, 0, 0, 0, 1);
+      grd.addColorStop(0,    `rgba(${col},${a})`);
+      grd.addColorStop(0.55, `rgba(${col},${a * 0.85})`);
+      grd.addColorStop(1,    `rgba(${col},0)`);
+      g.fillStyle = grd;
+      g.beginPath(); g.arc(0, 0, 1, 0, Math.PI * 2); g.fill();
+      g.restore();
+    };
+
+    // Maria: a core plus overlapping lobes sharing its orientation, so each reads as one soft sea.
+    for (const [x, y, rx, ry, a, rot] of MARIA) {
+      blob(x, y, rx * 1.05, ry * 1.05, a * 0.75, rot);
+      for (let i = 0; i < 7; i++) {
+        const ang = rnd() * Math.PI * 2, off = 0.35 + rnd() * 0.4;
+        const ox = Math.cos(ang) * rx * off, oy = Math.sin(ang) * ry * off;
+        const s = 0.45 + rnd() * 0.35;
+        blob(x + ox * Math.cos(rot) - oy * Math.sin(rot), y + ox * Math.sin(rot) + oy * Math.cos(rot),
+             rx * s, ry * s, a * 0.28, rot);
+      }
+    }
+    // Highland mottling: faint, large and small
+    for (let i = 0; i < 260; i++) {
+      const x = rnd() * 2 - 1, y = rnd() * 2 - 1;
+      if (x * x + y * y > 1) continue;
+      const s = 0.015 + rnd() * 0.06;
+      if (rnd() < 0.55) blob(x, y, s, s, rnd() * 0.06, 0);
+      else blob(x, y, s, s, rnd() * 0.08, 0, '255,255,255');
+    }
+    // Small craters: just a hint of rim, no dark polka dots
+    for (let i = 0; i < 90; i++) {
+      const x = rnd() * 2 - 1, y = rnd() * 2 - 1;
+      if (x * x + y * y > 0.92) continue;
+      const r = (0.004 + Math.pow(rnd(), 3) * 0.03) * TR;
+      const px = TR + x * TR, py = TR + y * TR;
+      g.fillStyle = 'rgba(0,0,0,0.05)';
+      g.beginPath(); g.arc(px, py, r, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = 'rgba(255,255,255,0.12)';
+      g.lineWidth = Math.max(0.5, r * 0.35);
+      g.beginPath(); g.arc(px, py, r, Math.PI * 0.9, Math.PI * 1.9); g.stroke();
+    }
+    // Ray craters: Tycho, Copernicus, Kepler, Aristarchus
+    g.save();
+    g.beginPath(); g.arc(TR, TR, TR, 0, Math.PI * 2); g.clip();
+    g.lineCap = 'round';
+    const rays = (x, y, n, lo, hi, a) => {
+      const cx = TR + x * TR, cy = TR + y * TR;
+      for (let i = 0; i < n; i++) {
+        const ang = rnd() * Math.PI * 2, len = (lo + rnd() * (hi - lo)) * TR;
+        g.lineWidth = Math.max(0.8, T * (0.002 + rnd() * 0.004));
+        g.strokeStyle = `rgba(255,255,255,${a * (0.4 + rnd() * 0.6)})`;
+        g.beginPath(); g.moveTo(cx, cy); g.lineTo(cx + Math.cos(ang) * len, cy + Math.sin(ang) * len); g.stroke();
+      }
+      blob(x, y, 0.035, 0.035, 0.85, 0, '255,255,255');
+    };
+    rays(-0.12,  0.76, 34, 0.15, 0.85, 0.07);
+    rays(-0.30, -0.14, 18, 0.06, 0.28, 0.06);
+    rays(-0.52, -0.08, 12, 0.05, 0.18, 0.05);
+    blob(-0.68, -0.32, 0.022, 0.022, 0.85, 0, '255,255,255');
+    g.restore();
+
+    const big = document.createElement('canvas');
+    big.width = big.height = N;
+    const bg = big.getContext('2d');
+    bg.imageSmoothingQuality = 'high';
+    bg.drawImage(c, 0, 0, N, N);
+    const data = bg.getImageData(0, 0, N, N).data;
+
+    albedo = new Float32Array(N * N);
+    nxA = new Float32Array(N * N);
+    nzA = new Float32Array(N * N);
+    edgeA = new Float32Array(N * N);
+    for (let j = 0; j < N; j++) {
+      for (let i = 0; i < N; i++) {
+        const k = j * N + i;
+        const px = (i + 0.5 - R) / R, py = (j + 0.5 - R) / R;
+        const d2 = px * px + py * py;
+        edgeA[k] = clamp((1 - Math.sqrt(d2)) * R + 0.5);
+        if (edgeA[k] === 0) continue;
+        nxA[k] = px;
+        nzA[k] = Math.sqrt(Math.max(0, 1 - d2));
+        albedo[k] = clamp(data[k * 4] / 232 + (rnd() - 0.5) * 0.035, 0, 1.1);
+      }
+    }
+    img = mctx.createImageData(N, N);
+    lastPhi = -1;
+  }
+
+  // phi: 0 = new moon, π = full. Sun sits to the right while waxing.
+  // DARK sits close to the sky colour so the unlit limb nearly vanishes; EARTH is faint earthshine.
+  const HL = [255, 240, 206], DARK = [6, 9, 28], EARTH = [9, 12, 22];
+  function renderMoon(phi) {
+    if (Math.abs(phi - lastPhi) < 0.002) return;
+    lastPhi = phi;
+    const Lx = Math.sin(phi), Lz = -Math.cos(phi);
+    const d = img.data;
+    for (let k = 0, p = 0, n = N * N; k < n; k++, p += 4) {
+      const e = edgeA[k];
+      if (e === 0) { d[p + 3] = 0; continue; }
+      const a = albedo[k];
+      const dot = nxA[k] * Lx + nzA[k] * Lz;
+      let lit = clamp((dot + 0.025) / 0.09);
+      lit = lit * lit * (3 - 2 * lit);
+      const sh = lit * (0.6 + 0.4 * Math.sqrt(dot > 0 ? dot : 0));
+      const tone = 0.3 + 0.7 * Math.pow(a, 1.4);
+      const dark = 1 - lit;
+      const es = dark * a;
+      d[p]     = HL[0] * tone * sh + DARK[0] * dark + EARTH[0] * es;
+      d[p + 1] = HL[1] * tone * sh + DARK[1] * dark + EARTH[1] * es;
+      d[p + 2] = HL[2] * (tone * 0.92 + 0.08) * sh + DARK[2] * dark + EARTH[2] * es;
+      d[p + 3] = e * 255;
+    }
+    mctx.putImageData(img, 0, 0);
+  }
+
+  /* ───────── Scroll → lunar day ───────── */
+
+  const ZH_DAYS = ['', '初一','初二','初三','初四','初五','初六','初七','初八','初九','初十',
+                   '十一','十二','十三','十四','十五','十六'];
+  function phaseName(day) {
+    if (day <= 7)  return '蛾眉月';
+    if (day <= 9)  return '上弦月';
+    if (day <= 14) return '盈凸月';
+    if (day === 15) return '望 · 满月';
+    return '既望 · 今夜';
+  }
+
+  const START_DAY = 3, END_DAY = 16;
+  let anchors = [];
+  function measureAnchors() {
+    const vh = innerHeight;
+    const ref = vh * 0.6;
+    const maxY = document.documentElement.scrollHeight - vh + ref;
+    anchors = [[ref, START_DAY]];
+    document.querySelectorAll('[data-day]').forEach(el => {
+      const y = el.getBoundingClientRect().top + scrollY;
+      if (y > anchors[anchors.length - 1][0] && y < maxY - 1) anchors.push([y, +el.dataset.day]);
+    });
+    anchors.push([Math.max(maxY, anchors[anchors.length - 1][0] + 1), END_DAY]);
+  }
+  function dayAt(scroll) {
+    const x = scroll + innerHeight * 0.6;
+    if (x <= anchors[0][0]) return anchors[0][1];
+    for (let i = 1; i < anchors.length; i++) {
+      const [y1, d1] = anchors[i];
+      if (x <= y1) {
+        const [y0, d0] = anchors[i - 1];
+        return lerp(d0, d1, (x - y0) / (y1 - y0));
+      }
+    }
+    return END_DAY;
+  }
+
+  /* ───────── Layout: fixed left column on desktop, dock-to-corner on mobile ───────── */
+
+  let desktop = false, S = 300, dpr = 1;
+  function layout() {
+    const vw = innerWidth, vh = innerHeight;
+    desktop = vw >= 960;
+    dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    S = desktop ? Math.min(vw * 0.32, vh * 0.56, 470) : spacer.getBoundingClientRect().width;
+    stage.style.width = stage.style.height = S + 'px';
+    const want = Math.min(720, Math.round(S * dpr));
+    if (!N || Math.abs(want - N) / N > 0.15) buildMoon(want);
+    moonCv.classList.remove('fallback');
+    measureAnchors();
+  }
+
+  let illum = 0, shownDay = 0;
+  function update() {
+    const vw = innerWidth, vh = innerHeight;
+    let cx, cy, scale = 1, t = 0;
+    if (desktop) {
+      cx = vw * 0.255; cy = vh * 0.45;
+    } else {
+      const r = spacer.getBoundingClientRect();
+      const DOCK = 50;
+      t = clamp(scrollY / (S * 0.9));
+      const e = easeInOut(t);
+      cx = lerp(r.left + r.width / 2, vw - 16 - DOCK / 2, e);
+      cy = lerp(r.top + r.height / 2, 16 + DOCK / 2, e);
+      scale = lerp(1, DOCK / S, e);
+    }
+    stage.style.transform = `translate(${cx - S / 2}px, ${cy - S / 2}px) scale(${scale})`;
+    caption.style.opacity = 1 - clamp(t * 2.4);
+    root.style.setProperty('--mx', cx + 'px');
+    root.style.setProperty('--my', cy + 'px');
+
+    const day = dayAt(scrollY);
+    const phi = Math.min(Math.PI, 2 * Math.PI * (day - 1) / SYNODIC);
+    illum = (1 - Math.cos(phi)) / 2;
+    renderMoon(phi);
+
+    halo.style.opacity = (0.12 + 0.88 * illum * illum).toFixed(3);
+    light.style.opacity = (0.1 + 0.9 * illum).toFixed(3);
+
+    const d = clamp(Math.round(day), START_DAY, END_DAY);
+    if (d !== shownDay) {
+      shownDay = d;
+      dayEl.textContent = '八月' + ZH_DAYS[d];
+      phaseEl.innerHTML = phaseName(d) + ` <span class="pct">· ${Math.round(illum * 100)}%</span>`;
+    } else {
+      phaseEl.lastElementChild.textContent = `· ${Math.round(illum * 100)}%`;
+    }
+    if (reduceMotion) drawSky(performance.now(), 0);
+  }
+
+  /* ───────── Sky: stars that fade as the moon brightens, drifting osmanthus ───────── */
+
+  const sky = document.getElementById('sky');
+  const sctx = sky.getContext('2d');
+  let W = 0, H = 0, stars = [], petals = [];
+
+  function resizeSky() {
+    const r = Math.min(window.devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    sky.width = W * r; sky.height = H * r;
+    sctx.setTransform(r, 0, 0, r, 0, 0);
+    const n = Math.min(380, Math.round(W * H / 4200));
+    stars = Array.from({ length: n }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      r: Math.random() * 1.1 + 0.25,
+      ph: Math.random() * Math.PI * 2,
+      sp: 0.0004 + Math.random() * 0.0009,
+    }));
+    const np = reduceMotion ? 0 : (W < 960 ? 12 : 22);
+    petals = Array.from({ length: np }, () => newPetal(true));
+  }
+  function newPetal(anywhere) {
+    return {
+      x: Math.random() * W,
+      y: anywhere ? Math.random() * H : -12,
+      s: 2.6 + Math.random() * 3.4,
+      rot: Math.random() * Math.PI,
+      vr: (Math.random() - 0.5) * 0.0016,
+      vy: 0.012 + Math.random() * 0.02,
+      vx: (Math.random() - 0.3) * 0.01,
+      sw: 0.0006 + Math.random() * 0.0008,
+      ph: Math.random() * Math.PI * 2,
+      hue: 34 + Math.random() * 10,
+      a: 0.45 + Math.random() * 0.4,
+    };
+  }
+  function drawPetal(p) {
+    sctx.save();
+    sctx.translate(p.x, p.y);
+    sctx.rotate(p.rot);
+    sctx.fillStyle = `hsla(${p.hue},82%,62%,${p.a})`;
+    for (let i = 0; i < 4; i++) {
+      sctx.rotate(Math.PI / 2);
+      sctx.beginPath();
+      sctx.ellipse(0, -p.s * 0.55, p.s * 0.42, p.s * 0.6, 0, 0, Math.PI * 2);
+      sctx.fill();
+    }
+    sctx.fillStyle = `hsla(${p.hue - 8},80%,45%,${p.a})`;
+    sctx.beginPath(); sctx.arc(0, 0, p.s * 0.22, 0, Math.PI * 2); sctx.fill();
+    sctx.restore();
+  }
+
+  let lastT = 0;
+  function drawSky(t, dt) {
+    sctx.clearRect(0, 0, W, H);
+    const vis = 1 - 0.65 * illum;
+    for (const s of stars) {
+      const tw = reduceMotion ? 0.75 : 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * s.sp + s.ph));
+      sctx.globalAlpha = tw * vis * 0.9;
+      sctx.fillStyle = '#DDE2F4';
+      sctx.beginPath(); sctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); sctx.fill();
+    }
+    sctx.globalAlpha = 1;
+    for (let i = 0; i < petals.length; i++) {
+      const p = petals[i];
+      p.y += p.vy * dt;
+      p.x += p.vx * dt + Math.sin(t * p.sw + p.ph) * 0.25;
+      p.rot += p.vr * dt;
+      if (p.y > H + 12 || p.x < -20 || p.x > W + 20) petals[i] = newPetal(false);
+      drawPetal(p);
+    }
+  }
+  function loop(t) {
+    const dt = Math.min(50, t - (lastT || t));
+    lastT = t;
+    drawSky(t, dt);
+    requestAnimationFrame(loop);
+  }
+
+  /* ───────── Wiring ───────── */
+
+  let queued = false;
+  const schedule = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; update(); });
+  };
+  function relayout() { layout(); resizeSky(); update(); }
+
+  relayout();
+  addEventListener('scroll', schedule, { passive: true });
+  // Mobile URL bars fire resize while scrolling; only rebuild on real size changes.
+  let lastW = innerWidth, lastH = innerHeight;
+  addEventListener('resize', () => {
+    if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 140) { measureAnchors(); schedule(); return; }
+    lastW = innerWidth; lastH = innerHeight;
+    relayout();
+  });
+  if (document.fonts) document.fonts.ready.then(() => { measureAnchors(); update(); });
+  addEventListener('load', () => { measureAnchors(); update(); });
+  if (!reduceMotion) requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

@@ -10,6 +10,7 @@ A static GitHub Pages site (`https://zifan-lin.github.io/homebar/`) for themed h
 index.html               Landing page (cream/editorial aesthetic)
 classics.html            Permanent classics menu (wood grain aesthetic)
 astronomy-bar-menu.html  Event menu: Event Horizon, April 2026 (dark void/space aesthetic)
+mid-autumn-bar-menu.html Event menu: Inviting the Moon, Sept 2026 (indigo night, scroll-driven moon phases)
 styles.css               Shared base styles (used by event menus only, not index or classics)
 cocktails.db             SQLite cocktail database (regenerate: python db/setup_db.py)
 db/setup_db.py           Creates schema and seeds all cocktail data
@@ -22,6 +23,7 @@ Each page has its **own distinct aesthetic** matching its content. Do not force 
 - **`index.html`** — neutral, light, editorial. Warm cream (`#FAF6EF`) background, dark ink text, large readable fonts. Acts as a calm hub that doesn't compete with any one theme. Each menu is represented by a card with a colored swatch strip hinting at that menu's palette.
 - **`classics.html`** — CSS wood grain background (layered `repeating-linear-gradient`), warm parchment (`#F4E8CE`) content panels, dark red (`#8B2010`) accents. Evokes an old bar counter.
 - **`astronomy-bar-menu.html`** — deep void black (`#04050E`), gold accents (`#C4963A`), animated star canvas, Cinzel/EB Garamond/Courier Prime type stack. Self-contained with all styles inline.
+- **`mid-autumn-bar-menu.html`** — indigo night sky, harvest-moon gold (`#F3DFA8`), cinnabar seal stamps (`#B42D22`), swinging SVG lanterns, drifting osmanthus florets. **Chinese is the primary language** (`lang="zh-CN"`); English appears only as small `.en` text for the title, section headers and drink names. Drinks use their classic names (Chinese + English), with festival legends in the descriptions and numeral seal stamps (壹, 贰, 叁…). Noto Serif SC (body) / Ma Shan Zheng (calligraphy) / Cormorant Garamond (English). A per-pixel rendered moon waxes from 初三 to 十六 as you scroll; each drink section (and the footer) carries a `data-day` attribute that pins the lunar day at that point. Desktop: moon fixed in the left column. Mobile: moon starts large in the hero and docks to the top-right corner.
 
 ## Shared elements
 
@@ -62,10 +64,10 @@ The index page is a single page and should remain internally consistent. Its cur
 
 | Category | Values (extend freely) |
 |----------|------------------------|
-| `flavor` | bitter, sweet, sour, dry, citrus-forward, spirit-forward, herbal, spicy, smoky, fruity, umami, refreshing |
+| `flavor` | bitter, sweet, sour, dry, citrus-forward, spirit-forward, herbal, spicy, smoky, fruity, umami, refreshing, floral |
 | `occasion` | aperitif, digestif, summer, winter, brunch, celebratory, all-season |
 | `era` | pre-prohibition, prohibition-era, classic, modern, contemporary |
-| `cultural` | american, cuban, british, japanese, french, italian, mexican, spanish |
+| `cultural` | american, cuban, british, japanese, french, italian, mexican, spanish, australian |
 | `technique` | egg-white, carbonated, layered, dry-shake, float, muddled |
 | `aesthetic` | blue, red, green, amber, clear, orange, visually-striking, elegant |
 | `other` | tribute (and anything that doesn't fit above) |

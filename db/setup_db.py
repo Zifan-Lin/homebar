@@ -110,6 +110,7 @@ TAGS = [
     ("fruity",          "flavor"),
     ("umami",           "flavor"),
     ("refreshing",      "flavor"),
+    ("floral",          "flavor"),
     # occasion
     ("aperitif",        "occasion"),
     ("digestif",        "occasion"),
@@ -133,6 +134,7 @@ TAGS = [
     ("italian",         "cultural"),
     ("mexican",         "cultural"),
     ("spanish",         "cultural"),
+    ("australian",      "cultural"),
     # technique
     ("egg-white",       "technique"),
     ("carbonated",      "technique"),
@@ -176,7 +178,7 @@ COCKTAILS = [
             ("Angostura bitters", "bitters",  2,   "dash",  None,       2),
             ("orange peel",       "garnish", None, "piece", None,       3),
         ],
-        "aliases": [("OBAFGKM", "Event Horizon menu")],
+        "aliases": [("OBAFGKM", "Event Horizon menu"), ("古典", "Inviting the Moon menu")],
         "tags": ["spirit-forward", "bitter", "sweet",
                  "pre-prohibition", "classic", "american",
                  "digestif", "all-season", "amber"],
@@ -226,7 +228,7 @@ COCKTAILS = [
             ("dry vermouth", "vermouth",15,   "ml",    None,               1),
             ("olive",        "garnish", None, "piece", "or lemon twist",   2),
         ],
-        "aliases": [],
+        "aliases": [("马天尼", "Inviting the Moon menu")],
         "tags": ["spirit-forward", "dry", "classic",
                  "pre-prohibition", "american", "aperitif",
                  "all-season", "clear", "elegant"],
@@ -261,7 +263,7 @@ COCKTAILS = [
             ("simple syrup",      "syrup",  15,   "ml", None,       2),
             ("egg white",         "other",  None, "piece","optional",3),
         ],
-        "aliases": [("WISE", "Event Horizon menu")],
+        "aliases": [("WISE", "Event Horizon menu"), ("威士忌酸", "Inviting the Moon menu")],
         "tags": ["sour", "citrus-forward", "classic",
                  "american", "pre-prohibition", "all-season", "egg-white"],
     },
@@ -469,6 +471,234 @@ COCKTAILS = [
         "tags": ["refreshing", "citrus-forward",
                  "classic", "mexican", "summer", "carbonated"],
     },
+
+    # ── Liqueur cocktails (added Sept 2026 for Inviting the Moon) ──────────
+    # Built to use up lychee, blue curaçao, grapefruit, elderflower and
+    # green melon liqueurs. Source recipes in oz, stored here in ml.
+
+    {
+        "name": "China Blue",
+        "glass": "martini", "style": "short", "strength": "light",
+        "method": "shaken", "color": "blue", "origin_country": None,
+        "notes": "Lychee and blue curaçao with pink grapefruit. Fine strain. "
+                 "Source: Difford's Guide.",
+        "recipe": [
+            ("lychee liqueur",        "liqueur", 20,  "ml",    None, 0),
+            ("blue curaçao",          "liqueur", 20,  "ml",    None, 1),
+            ("pink grapefruit juice", "juice",   40,  "ml",    "fresh", 2),
+            ("fresh lemon juice",     "juice",   7.5, "ml",    None, 3),
+            ("lychee",                "garnish", None, "piece", "skewered", 4),
+        ],
+        "aliases": [],
+        "tags": ["fruity", "sweet", "citrus-forward", "modern",
+                 "blue", "visually-striking"],
+    },
+
+    {
+        "name": "Citrus Cooler",
+        "glass": "highball", "style": "long", "strength": "medium",
+        "method": "built", "color": "pale pink", "origin_country": None,
+        "notes": "Stir liqueurs and vodka over ice, top with soda. "
+                 "Source: Bajan Artisanal (grapefruit liqueur producer).",
+        "recipe": [
+            ("grapefruit liqueur",  "liqueur", 60,   "ml",    None, 0),
+            ("vodka",               "spirit",  30,   "ml",    None, 1),
+            ("elderflower liqueur", "liqueur", 30,   "ml",    None, 2),
+            ("soda water",          "mixer",   60,   "ml",    None, 3),
+            ("grapefruit slice",    "garnish", None, "piece", None, 4),
+            ("rosemary sprig",      "garnish", None, "piece", None, 5),
+        ],
+        "aliases": [("柑橘清凉", "Inviting the Moon menu")],
+        "tags": ["refreshing", "fruity", "floral", "citrus-forward",
+                 "contemporary", "summer", "carbonated"],
+    },
+
+    {
+        "name": "Summer Breeze",
+        "glass": "highball", "style": "long", "strength": "medium",
+        "method": "built", "color": "pale yellow", "origin_country": None,
+        "notes": "Tequila highball with elderflower and grapefruit liqueurs. "
+                 "For a drier drink, cut both liqueurs to 15 ml. "
+                 "Source: Kindred Cocktails.",
+        "recipe": [
+            ("blanco tequila",      "spirit",  60,   "ml",    None, 0),
+            ("elderflower liqueur", "liqueur", 22.5, "ml",    None, 1),
+            ("grapefruit liqueur",  "liqueur", 22.5, "ml",    None, 2),
+            ("fresh lime juice",    "juice",   22.5, "ml",    None, 3),
+            ("soda water",          "mixer",   120,  "ml",    None, 4),
+            ("lime wheel",          "garnish", None, "piece", None, 5),
+        ],
+        "aliases": [("夏日微风", "Inviting the Moon menu")],
+        "tags": ["refreshing", "floral", "citrus-forward",
+                 "contemporary", "mexican", "summer", "carbonated"],
+    },
+
+    {
+        "name": "Lychee Rickey",
+        "glass": "highball", "style": "long", "strength": "medium",
+        "method": "shaken", "color": "clear", "origin_country": None,
+        "notes": "Shake, then strain over ice while pouring the soda. "
+                 "Source: Difford's Guide.",
+        "recipe": [
+            ("gin",              "spirit",  60,   "ml",    None, 0),
+            ("lychee liqueur",   "liqueur", 30,   "ml",    None, 1),
+            ("fresh lime juice", "juice",   15,   "ml",    None, 2),
+            ("soda water",       "mixer",   60,   "ml",    None, 3),
+            ("lime zest",        "garnish", None, "piece", "long string", 4),
+        ],
+        "aliases": [("荔枝瑞奇", "Inviting the Moon menu")],
+        "tags": ["refreshing", "fruity", "citrus-forward",
+                 "modern", "summer", "carbonated"],
+    },
+
+    {
+        "name": "Lychee Martini",
+        "glass": "martini", "style": "short", "strength": "medium",
+        "method": "shaken", "color": "pale", "origin_country": "USA",
+        "notes": "A shaken vodka 'tini' rather than a true Martini. "
+                 "Source: The Mixer.",
+        "recipe": [
+            ("vodka",            "spirit",  45,   "ml",    None, 0),
+            ("lychee liqueur",   "liqueur", 45,   "ml",    None, 1),
+            ("fresh lime juice", "juice",   1,    "dash",  None, 2),
+            ("lychee",           "garnish", None, "piece", "pitted", 3),
+        ],
+        "aliases": [("荔枝马天尼", "Inviting the Moon menu")],
+        "tags": ["fruity", "sweet", "modern", "american",
+                 "all-season", "elegant", "clear"],
+    },
+
+    {
+        "name": "Blue Lagoon",
+        "glass": "collins", "style": "long", "strength": "light",
+        "method": "built", "color": "blue", "origin_country": "France",
+        "notes": "Created by Andy MacElhone at Harry's New York Bar, Paris. "
+                 "House version (no lemon-lime soda): 75 ml soda water plus "
+                 "10 ml fresh lemon juice. Source: Difford's Guide.",
+        "recipe": [
+            ("vodka",            "spirit",  40,   "ml",    None, 0),
+            ("blue curaçao",     "liqueur", 30,   "ml",    None, 1),
+            ("fresh lime juice", "juice",   20,   "ml",    None, 2),
+            ("lemon-lime soda",  "mixer",   75,   "ml",    None, 3),
+            ("orange slice",     "garnish", None, "piece", None, 4),
+            ("maraschino cherry","garnish", None, "piece", None, 5),
+        ],
+        "aliases": [("蓝色泻湖", "Inviting the Moon menu")],
+        "tags": ["refreshing", "sweet", "citrus-forward", "modern",
+                 "french", "summer", "carbonated", "blue", "visually-striking"],
+    },
+
+    {
+        "name": "Blue Margarita",
+        "glass": "coupe", "style": "short", "strength": "medium",
+        "method": "blended", "color": "blue", "origin_country": None,
+        "notes": "Blend with a scoop of crushed ice, or shake and serve on "
+                 "the rocks. House version: 22.5 ml simple syrup in place "
+                 "of the rich syrup. Source: Difford's Guide.",
+        "recipe": [
+            ("reposado tequila",   "spirit",  60,   "ml",    None, 0),
+            ("blue curaçao",       "liqueur", 30,   "ml",    None, 1),
+            ("fresh lime juice",   "juice",   30,   "ml",    None, 2),
+            ("rich syrup (2:1)",   "syrup",   15,   "ml",    None, 3),
+            ("lime slice",         "garnish", None, "piece", None, 4),
+        ],
+        "aliases": [("蓝色玛格丽特", "Inviting the Moon menu")],
+        "tags": ["sour", "citrus-forward", "modern", "mexican",
+                 "summer", "blue", "visually-striking"],
+    },
+
+    {
+        "name": "Grapefruit Margarita",
+        "glass": "rocks", "style": "short", "strength": "medium",
+        "method": "shaken", "color": "pale pink", "origin_country": None,
+        "notes": "Source calls for triple sec; orange liqueur used instead. "
+                 "Salt or sugar rim. Source: Bajan Artisanal.",
+        "recipe": [
+            ("grapefruit liqueur", "liqueur", 60,   "ml",    None, 0),
+            ("blanco tequila",     "spirit",  45,   "ml",    None, 1),
+            ("fresh lime juice",   "juice",   30,   "ml",    None, 2),
+            ("orange liqueur",     "liqueur", 15,   "ml",    None, 3),
+            ("salt",               "garnish", None, "rim",   "or sugar", 4),
+            ("grapefruit wedge",   "garnish", None, "piece", None, 5),
+        ],
+        "aliases": [("西柚玛格丽特", "Inviting the Moon menu")],
+        "tags": ["sour", "fruity", "citrus-forward", "contemporary",
+                 "mexican", "summer"],
+    },
+
+    {
+        "name": "Elderflower Collins",
+        "glass": "collins", "style": "long", "strength": "medium",
+        "method": "shaken", "color": "clear", "origin_country": None,
+        "notes": "Shake, strain over ice, top with 90–120 ml soda. "
+                 "Source: DrinksWorld.",
+        "recipe": [
+            ("gin",                 "spirit",  60,   "ml",    None, 0),
+            ("fresh lemon juice",   "juice",   30,   "ml",    None, 1),
+            ("elderflower liqueur", "liqueur", 22.5, "ml",    None, 2),
+            ("soda water",          "mixer",   105,  "ml",    "90–120 ml", 3),
+            ("lemon twist",         "garnish", None, "piece", "optional", 4),
+        ],
+        "aliases": [("接骨木花柯林斯", "Inviting the Moon menu")],
+        "tags": ["refreshing", "floral", "citrus-forward", "contemporary",
+                 "summer", "carbonated", "elegant"],
+    },
+
+    {
+        "name": "Japanese Slipper",
+        "glass": "martini", "style": "short", "strength": "medium",
+        "method": "shaken", "color": "green", "origin_country": "Australia",
+        "notes": "Created by Jean-Paul Bourguignon at Mietta's, Melbourne, 1984. "
+                 "Equal parts; sweet — try 20 ml lemon for tarter. "
+                 "Source uses triple sec; orange liqueur used instead. "
+                 "Source: Difford's Guide.",
+        "recipe": [
+            ("orange liqueur",    "liqueur", 30,   "ml",    None, 0),
+            ("Midori",            "liqueur", 30,   "ml",    "or any green melon liqueur", 1),
+            ("fresh lemon juice", "juice",   30,   "ml",    None, 2),
+            ("maraschino cherry", "garnish", None, "piece", None, 3),
+        ],
+        "aliases": [("日本拖鞋", "Inviting the Moon menu")],
+        "tags": ["sweet", "sour", "fruity", "modern", "australian",
+                 "green", "visually-striking"],
+    },
+
+    {
+        "name": "Midori Sour",
+        "glass": "rocks", "style": "short", "strength": "light",
+        "method": "built", "color": "green", "origin_country": None,
+        "notes": "Stir melon liqueur and citrus over ice, top with soda. "
+                 "Source: A Couple Cooks.",
+        "recipe": [
+            ("Midori",            "liqueur", 60,   "ml",    "or any green melon liqueur", 0),
+            ("fresh lime juice",  "juice",   15,   "ml",    None, 1),
+            ("fresh lemon juice", "juice",   15,   "ml",    None, 2),
+            ("soda water",        "mixer",   60,   "ml",    None, 3),
+            ("maraschino cherry", "garnish", None, "piece", "optional", 4),
+            ("lime slice",        "garnish", None, "piece", "optional", 5),
+        ],
+        "aliases": [("蜜瓜酸", "Inviting the Moon menu")],
+        "tags": ["sour", "sweet", "fruity", "refreshing", "modern",
+                 "summer", "carbonated", "green"],
+    },
+
+    {
+        "name": "Midori Margarita",
+        "glass": "rocks", "style": "short", "strength": "medium",
+        "method": "shaken", "color": "green", "origin_country": None,
+        "notes": "Source gives parts (1½ : 1 : 1 : ½); 1 part = 30 ml. "
+                 "Source: The Cocktail Project (Suntory).",
+        "recipe": [
+            ("blanco tequila",   "spirit",  45,   "ml",    None, 0),
+            ("Midori",           "liqueur", 30,   "ml",    "or any green melon liqueur", 1),
+            ("fresh lime juice", "juice",   30,   "ml",    None, 2),
+            ("simple syrup",     "syrup",   15,   "ml",    None, 3),
+            ("lime wheel",       "garnish", None, "piece", None, 4),
+        ],
+        "aliases": [("蜜瓜玛格丽特", "Inviting the Moon menu")],
+        "tags": ["sour", "fruity", "citrus-forward", "contemporary",
+                 "mexican", "summer", "green"],
+    },
 ]
 
 # ── Relations ───────────────────────────────────────────────────────────────
@@ -510,6 +740,33 @@ RELATIONS = [
      "Both are long, sparkling celebratory drinks"),
     ("Corona with Lime", "Moscow Mule","sibling",
      "Both are simple, refreshing long drinks anchored by lime"),
+    # Liqueur cocktails
+    ("Blue Margarita",       "Margarita", "variant_of",
+     "Blue curaçao replaces triple sec"),
+    ("Grapefruit Margarita", "Margarita", "variant_of",
+     "Grapefruit liqueur leads; orange liqueur kept as a supporting note"),
+    ("Midori Margarita",     "Margarita", "variant_of",
+     "Melon liqueur replaces triple sec"),
+    ("Lychee Martini",       "Martini",   "inspired_by",
+     "A shaken, fruit-liqueur 'tini' named after the Martini"),
+    ("China Blue",           "M-30 Rain", "sibling",
+     "Both are shaken, served up, and pair blue curaçao with grapefruit"),
+    ("China Blue",           "Lychee Martini", "sibling",
+     "Both are lychee-liqueur drinks served up"),
+    ("Citrus Cooler",        "Summer Breeze", "sibling",
+     "Both are grapefruit + elderflower liqueur highballs topped with soda"),
+    ("Lychee Rickey",        "Elderflower Collins", "sibling",
+     "Both are gin + citrus + liqueur, lengthened with soda"),
+    ("Blue Lagoon",          "Moscow Mule", "sibling",
+     "Both are vodka + lime lengthened with a carbonated mixer"),
+    ("Japanese Slipper",     "Midori Sour", "sibling",
+     "Both are melon liqueur + fresh citrus"),
+    ("Midori Sour",          "Whiskey Sour", "sibling",
+     "Both follow the sour template (base, citrus, sweetness)"),
+    ("Midori Southside",     "Midori Sour", "sibling",
+     "Both are melon-liqueur sours with lime"),
+    ("Japanese Slipper",     "Sidecar", "sibling",
+     "Both are equal-ish parts spirit/liqueur + orange liqueur + lemon, shaken"),
 ]
 
 # ── Helpers ─────────────────────────────────────────────────────────────────
